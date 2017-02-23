@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ExtensionManifest
-    xmlns="ExtensionManifest"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="ExtensionManifest ExtensionManifest_v_6_0.xsd"
-    ExtensionBundleId="{{ data.csxsManifest.bundleId }}"
-    ExtensionBundleName="{{ data.csxsManifest.displayName }}"
-    ExtensionBundleVersion="{{ data.version }}"
-    Version="5.0">
-  {{#data.author}}
+  xmlns="ExtensionManifest"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="ExtensionManifest ExtensionManifest_v_6_0.xsd"
+  ExtensionBundleId="{{ csxsManifest.bundleId }}"
+  ExtensionBundleName="{{ csxsManifest.displayName }}"
+  ExtensionBundleVersion="{{ version }}"
+  Version="5.0">
+  {{#if author}}
     <Author>
-      {{^data.author.name}}{{ data.author }}{{/data.author.name}}
-      {{ data.author.name }}{{#data.author.email}} &lt;{{ data.author.email }}&gt;{{/data.author.email}}
+      {{#if author.name}}{{ author.name }}{{#if author.email}} &lt;{{ author.email }}&gt;{{/if}}{{else}}{{ author }}{{/if}}
     </Author>
-  {{/data.author}}
+  {{/if}}
   <ExtensionList>
-    {{#each data.csxsManifest.extensions}}
-      <Extension Id="{{ data.csxsManifest.bundleId }}.{{ @key }}" Version="{{ data.version }}"/>
+    {{#each csxsManifest.extensions}}
+      <Extension Id="{{ @root.csxsManifest.bundleId }}.{{ @key }}" Version="{{ @root.version }}"/>
     {{/each}}
   </ExtensionList>
   <ExecutionEnvironment>
     <HostList>
-      {{#each data.csxsManifest.hosts}}
+      {{#each csxsManifest.hosts}}
         <Host Name="{{ @key }}" Version="{{ this }}"/>
       {{/each}}
     </HostList>
@@ -28,62 +27,62 @@
       <Locale Code="All"/>
     </LocaleList>
     <RequiredRuntimeList>
-      <RequiredRuntime Name="{{ data.csxsManifest.runtime.name }}" Version="{{ data.csxsManifest.runtime.version }}"/>
+      <RequiredRuntime Name="{{ csxsManifest.runtime.name }}" Version="{{ csxsManifest.runtime.version }}"/>
     </RequiredRuntimeList>
   </ExecutionEnvironment>
   <DispatchInfoList>
-    {{#each data.csxsManifest.extensions}}
-    <Extension Id="{{ data.csxsManifest.bundleId }}.{{ @key }}">
-      <DispatchInfo>
-        <Resources>
-          {{#this.resources.script}}
-            <ScriptPath>{{ this.resources.script }}</ScriptPath>
-          {{/this.resources.script}}
-          {{#this.resources.main}}
-            <MainPath>{{ this.resources.main }}</MainPath>
-          {{/this.resources.main}}
-        </Resources>
-        <UI>
-          <Type>{{ this.ui.type }}</Type>
-          <Menu>{{ this.ui.menu }}</Menu>
-          {{#this.ui.geometry}}
-            <Geometry>
-              {{#this.ui.geometry.size}}
-                <Size>
-                  <Height>{{ this.ui.geometry.size.height }}</Height>
-                  <Width>{{ this.ui.geometry.size.width }}</Width>
-                </Size>
-              {{/this.ui.geometry.size}}
-              {{#this.ui.geometry.min}}
-                <MinSize>
-                  <Height>{{ this.ui.geometry.min.height }}</Height>
-                  <Width>{{ this.ui.geometry.min.width }}</Width>
-                </MinSize>
-              {{/this.ui.geometry.min}}
-              {{#this.ui.geometry.max}}
-                <MaxSize>
-                  <Height>{{ this.ui.geometry.max.height }}</Height>
-                  <Width>{{ this.ui.geometry.max.width }}</Width>
-                </MaxSize>
-              {{/this.ui.geometry.max}}
-              {{#this.ui.geometry.screenPercentage}}
-                <ScreenPercentage>
-                  <Height>{{ this.ui.geometry.screenPercentage.height }}</Height>
-                  <Width>{{ this.ui.geometry.screenPercentage.width }}</Width>
-                </ScreenPercentage>
-              {{/this.ui.geometry.screenPercentage}}
-            </Geometry>
-          {{/this.ui.geometry}}
-          {{#this.ui.icons}}
-            <Icons>
-              {{#each this.ui.icons}}
-                <Icon Type="{{ @key }}">{{ this }}</Icon>
-              {{/each}}
-            </Icons>
-          {{/this.ui.icons}}
-        </UI>
-      </DispatchInfo>
-    </Extension>
+    {{#each csxsManifest.extensions}}
+      <Extension Id="{{ @root.csxsManifest.bundleId }}.{{ @key }}">
+        <DispatchInfo>
+          <Resources>
+            {{#if this.resources.script}}
+              <ScriptPath>{{ this.resources.script }}</ScriptPath>
+            {{/if}}
+            {{#if this.resources.main}}
+              <MainPath>{{ this.resources.main }}</MainPath>
+            {{/if}}
+          </Resources>
+          <UI>
+            <Type>{{ this.ui.type }}</Type>
+            <Menu>{{ this.ui.menu }}</Menu>
+            {{#if this.ui.geometry}}
+              <Geometry>
+                {{#if this.ui.geometry.size}}
+                  <Size>
+                    <Height>{{ this.ui.geometry.size.height }}</Height>
+                    <Width>{{ this.ui.geometry.size.width }}</Width>
+                  </Size>
+                {{/if}}
+                {{#if this.ui.geometry.min}}
+                  <MinSize>
+                    <Height>{{ this.ui.geometry.min.height }}</Height>
+                    <Width>{{ this.ui.geometry.min.width }}</Width>
+                  </MinSize>
+                {{/if}}
+                {{#if this.ui.geometry.max}}
+                  <MaxSize>
+                    <Height>{{ this.ui.geometry.max.height }}</Height>
+                    <Width>{{ this.ui.geometry.max.width }}</Width>
+                  </MaxSize>
+                {{/if}}
+                {{#if this.ui.geometry.screenPercentage}}
+                  <ScreenPercentage>
+                    <Height>{{ this.ui.geometry.screenPercentage.height }}</Height>
+                    <Width>{{ this.ui.geometry.screenPercentage.width }}</Width>
+                  </ScreenPercentage>
+                {{/if}}
+              </Geometry>
+            {{/if}}
+            {{#if this.ui.icons}}
+              <Icons>
+                {{#each this.ui.icons}}
+                  <Icon Type="{{ @key }}">{{ this }}</Icon>
+                {{/each}}
+              </Icons>
+            {{/if}}
+          </UI>
+        </DispatchInfo>
+      </Extension>
     {{/each}}
   </DispatchInfoList>
 </ExtensionManifest>
