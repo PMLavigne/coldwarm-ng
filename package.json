@@ -5,12 +5,13 @@
   "scripts": {
     "clean": "rimraf build && mkdirp build",
     "lint": "eslint src --fix",
-    "copy": "npm run copy:html && npm run copy:manifest",
+    "copy": "npm run copy:html && npm run copy:libs && npm run copy:manifest",
     "copy:html": "cp src/index.html build/index.html",
+    "copy:libs": "mkdirp build/lib && cp src/lib/* build/lib",
     "copy:manifest": "mkdirp build/CSXS && hbsutil -s -v -e -d build/CSXS -f package.json src/CSXS/manifest.xml.hbs",
     "scss:dev": "mkdirp build/css && node-sass --source-map-contents --source-map-embed --source-comments --include-path src/scss -o build/css src/scss/style.scss",
     "scss": "mkdirp build/css && node-sass -x  --include-path src/scss --output-style compressed -o build/css src/scss/style.scss",
-    "build:dev": "babel -s inline -d build/js src/js",
+    "build:dev": "touch .debug && cp .debug build/.debug && babel -s inline -d build/js src/js",
     "build:debug": "npm run build:dev && babel -s inline -w --skip-initial-build -d build/js src/js",
     "build": "babel -s false --no-comments --compact true --minified -o build/js/app.js src/js`",
     "dev": "npm run clean && npm run lint && npm run copy && npm run scss:dev && npm run build:dev",
@@ -49,11 +50,11 @@
     "bundleId": "codes.patrick.coldwarm-ng",
     "runtime": {
       "name": "CSXS",
-      "version": "6.0"
+      "version": "5.0"
     },
     "hosts": {
-      "PHSP": "14",
-      "PHXS": "14"
+      "PHSP": "[15,18.9]",
+      "PHXS": "[15,18.9]"
     },
     "extensions": {
       "picker": {

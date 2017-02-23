@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ExtensionManifest
-  xmlns="ExtensionManifest"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="ExtensionManifest ExtensionManifest_v_6_0.xsd"
+  Version="5.0"
   ExtensionBundleId="{{ csxsManifest.bundleId }}"
   ExtensionBundleName="{{ csxsManifest.displayName }}"
-  ExtensionBundleVersion="{{ version }}"
-  Version="5.0">
+  ExtensionBundleVersion="{{ version }}">
   {{#if author}}
     <Author>
       {{#if author.name}}{{ author.name }}{{#if author.email}} &lt;{{ author.email }}&gt;{{/if}}{{else}}{{ author }}{{/if}}
@@ -80,6 +77,9 @@
                 {{/each}}
               </Icons>
             {{/if}}
+            <Lifecycle>
+              <AutoVisible>true</AutoVisible>
+            </Lifecycle>
           </UI>
         </DispatchInfo>
       </Extension>
