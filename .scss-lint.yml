@@ -1,0 +1,12 @@
+scss_files: 'src/scss/**/*.scss'
+
+linters:
+  LeadingZero:
+    enabled: true
+    style: include_zero
+  StringQuotes:
+    enabled: true
+    style: double_quotes
+  NameFormat:
+    enabled: false
+    function_convention: camel_case

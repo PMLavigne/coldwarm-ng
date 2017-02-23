@@ -3,19 +3,23 @@
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 7,
-    "sourceType": "module",
+    "sourceType": "script",
     "ecmaFeatures": {
-      "modules": true,
+      "modules": false,
       "classes": true
     }
   },
   "env": {
     "es6": true,
-    "shared-node-browser": true,
-    "jest": true
+    "browser": true,
+    "shared-node-browser": true
+  },
+  "globals": {
+      "CSInterface": true
   },
   "extends": "eslint-config-airbnb",
   "rules": {
+    "no-console": 0,
     "comma-dangle": 0,
     "max-len": [2, 200, 2],
     "new-cap": ["error", {"capIsNew": false}]

@@ -1,4 +1,4 @@
 {
-  "plugins": [ "transform-decorators", "transform-runtime"],
+  "plugins": [],
   "presets": ["es2015", "stage-0"]
 }

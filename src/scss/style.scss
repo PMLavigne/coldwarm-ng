@@ -1,4 +1,36 @@
+
+
+$background-alpha-lighter: rgba(255, 255, 255, 0.25);
+$background-alpha-light: rgba(255, 255, 255, 0.1);
+$background-alpha-dark: rgba(0, 0, 0, 0.1);
+$background-alpha-darker: rgba(0, 0, 0, 0.25);
+
+
 body {
-  padding: 0;
   margin: 0;
+  padding: 0;
+}
+
+.coldwarm-body {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+
+  .coldwarm-left-panel,
+  .coldwarm-right-panel {
+    background-color: $background-alpha-dark;
+    display: flex;
+  }
+
+  .coldwarm-left-panel {
+    border-right: 2px solid $background-alpha-lighter;
+    flex: 1 0 auto;
+    flex-direction: row;
+  }
+
+  .coldwarm-right-panel {
+    flex: 1 1 15%;
+    flex-direction: column;
+  }
 }
