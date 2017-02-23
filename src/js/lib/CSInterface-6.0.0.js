@@ -11,7 +11,7 @@
 *
 **************************************************************************************************/
 
-/** CSInterface - v6.1.0 */
+/** CSInterface - v6.0.0 */
 
 /**
  * Stores constants for the window types supported by the CSXS infrastructure.
@@ -500,7 +500,7 @@ CSInterface.prototype.getSystemPath = function (pathType) {
  *          If execution fails, the callback function receives the error message \c EvalScript_ErrMessage.
  */
 CSInterface.prototype.evalScript = function (script, callback) {
-  if (callback === null || callback === undefined) {
+  if (callback == null || callback == undefined) {
     callback = function (result) {};
   }
   window.__adobe_cep__.evalScript(script, callback);
@@ -640,7 +640,7 @@ CSInterface.prototype.initResourceBundle = function () {
     if (resKey) {
            // Get all the resources that start with the key.
       for (const key in resourceBundle) {
-        if (key.indexOf(resKey) === 0) {
+        if (key.indexOf(resKey) == 0) {
           const resValue = resourceBundle[key];
           if (key.length == resKey.length) {
             resEl.innerHTML = resValue;
@@ -680,37 +680,36 @@ CSInterface.prototype.getOSInformation = function () {
     let winBit = '';
     if (userAgent.indexOf('Windows') > -1) {
       if (userAgent.indexOf('Windows NT 5.0') > -1) {
-        winVersion = 'Windows 2000';
+        winVersion = 'Windows 2000 ';
       } else if (userAgent.indexOf('Windows NT 5.1') > -1) {
-        winVersion = 'Windows XP';
+        winVersion = 'Windows XP ';
       } else if (userAgent.indexOf('Windows NT 5.2') > -1) {
-        winVersion = 'Windows Server 2003';
+        winVersion = 'Windows Server 2003 ';
       } else if (userAgent.indexOf('Windows NT 6.0') > -1) {
-        winVersion = 'Windows Vista';
+        winVersion = 'Windows Vista ';
       } else if (userAgent.indexOf('Windows NT 6.1') > -1) {
-        winVersion = 'Windows 7';
+        winVersion = 'Windows 7 ';
       } else if (userAgent.indexOf('Windows NT 6.2') > -1) {
-        winVersion = 'Windows 8';
-      } else if (userAgent.indexOf('Windows NT 6.3') > -1) {
-        winVersion = 'Windows 8.1';
-      } else if (userAgent.indexOf('Windows NT 10') > -1) {
-          winVersion = 'Windows 10';
-        }
+        winVersion = 'Windows 8 ';
+      }
 
-      if (userAgent.indexOf('WOW64') > -1 || userAgent.indexOf('Win64') > -1) {
-        winBit = ' 64-bit';
+      if (userAgent.indexOf('WOW64') > -1) {
+        winBit = '64-bit';
       } else {
-        winBit = ' 32-bit';
+        winBit = '32-bit';
       }
     }
 
     return winVersion + winBit;
   } else if ((navigator.platform == 'MacIntel') || (navigator.platform == 'Macintosh')) {
     let result = 'Mac OS X';
-
-    if (userAgent.indexOf('Mac OS X') > -1) {
-      result = userAgent.substring(userAgent.indexOf('Mac OS X'), userAgent.indexOf(')'));
-      result = result.replace(/_/g, '.');
+    let agentStr = new String();
+    agentStr = userAgent;
+    if (agentStr.indexOf('Mac OS X') > -1) {
+      const verLength = agentStr.indexOf(')') - agentStr.indexOf('Mac OS X');
+      const verStr = agentStr.substr(agentStr.indexOf('Mac OS X'), verLength);
+      result = verStr.replace('_', '.');
+      result = result.replace('_', '.');
     }
 
     return result;
@@ -761,11 +760,11 @@ CSInterface.prototype.getExtensionID = function () {
  *
  * Since 4.2.0
  *
- * @return One of the following float number.
+ * @return One of the following integer.
  *      <ul>\n
- *          <li> -1.0 when error occurs </li>\n
- *          <li> 1.0 means normal screen </li>\n
- *          <li> >1.0 means HiDPI screen </li>\n
+ *          <li>-1 means fail to get scale factor or this API has not been available on Windows yet</li>\n
+ *          <li>1 means normal screen</li>\n
+ *          <li>2 means HiDPI screen</li>\n
  *      </ul>\n
  */
 CSInterface.prototype.getScaleFactor = function () {
@@ -874,7 +873,7 @@ CSInterface.prototype.updatePanelMenuItem = function (menuItemLabel, enabled, ch
  * @param menu      A XML string which describes menu structure.
  * @param callback  The callback function which is called when a menu item is clicked. The only parameter is the returned ID of clicked menu item.
  *
- * @description An example menu XML:
+ * An example menu XML:
  * <Menu>
  *   <MenuItem Id="menuItemId1" Label="TestExample1" Enabled="true" Checkable="true" Checked="false" Icon="./image/small_16X16.png"/>
  *   <MenuItem Id="menuItemId2" Label="TestExample2">
@@ -912,7 +911,7 @@ CSInterface.prototype.setContextMenu = function (menu, callback) {
  * @param menu      A JSON string which describes menu structure.
  * @param callback  The callback function which is called when a menu item is clicked. The only parameter is the returned ID of clicked menu item.
  *
- * @description An example menu JSON:
+ * An example menu JSON:
  *
  * {
  *      "menu": [
@@ -947,7 +946,7 @@ CSInterface.prototype.setContextMenu = function (menu, callback) {
  *                      "enabled": true,
  *                      "checkable": true,
  *                      "checked": true
- *                  }
+                    }
  *              ]
  *          },
  *          {
@@ -1017,86 +1016,4 @@ CSInterface.prototype.isWindowVisible = function () {
  */
 CSInterface.prototype.resizeContent = function (width, height) {
   window.__adobe_cep__.resizeContent(width, height);
-};
-
-/**
- * Register the invalid certificate callback for an extension.
- * This callback will be triggered when the extension tries to access the web site that contains the invalid certificate on the main frame.
- * But if the extension does not call this function and tries to access the web site containing the invalid certificate, a default error page will be shown.
- *
- * Since 6.1.0
- *
- * @param callback the callback function
- */
-CSInterface.prototype.registerInvalidCertificateCallback = function (callback) {
-  return window.__adobe_cep__.registerInvalidCertificateCallback(callback);
-};
-
-/**
- * Register an interest in some key events to prevent them from being sent to the host application.
- *
- * This function works with modeless extensions and panel extensions.
- * Generally all the key events will be sent to the host application for these two extensions if the current focused element
- * is not text input or dropdown,
- * If you want to intercept some key events and want them to be handled in the extension, please call this function
- * in advance to prevent them being sent to the host application.
- *
- * Since 6.1.0
- *
- * @param keyEventsInterest      A JSON string describing those key events you are interested in. A null object or
-                                 an empty string will lead to removing the interest
- *
- * This JSON string should be an array, each object has following keys:
- *
- * keyCode:  [Required] represents an OS system dependent virtual key code identifying
- *           the unmodified value of the pressed key.
- * ctrlKey:  [optional] a Boolean that indicates if the control key was pressed (true) or not (false) when the event occurred.
- * altKey:   [optional] a Boolean that indicates if the alt key was pressed (true) or not (false) when the event occurred.
- * shiftKey: [optional] a Boolean that indicates if the shift key was pressed (true) or not (false) when the event occurred.
- * metaKey:  [optional] (Mac Only) a Boolean that indicates if the Meta key was pressed (true) or not (false) when the event occurred.
- *                      On Macintosh keyboards, this is the command key. To detect Windows key on Windows, please use keyCode instead.
- * An example JSON string:
- *
- * [
- *     {
- *         "keyCode": 48
- *     },
- *     {
- *         "keyCode": 123,
- *         "ctrlKey": true
- *     },
- *     {
- *         "keyCode": 123,
- *         "ctrlKey": true,
- *         "metaKey": true
- *     }
- * ]
- *
- */
-CSInterface.prototype.registerKeyEventsInterest = function (keyEventsInterest) {
-  return window.__adobe_cep__.registerKeyEventsInterest(keyEventsInterest);
-};
-
-/**
- * Set the title of the extension window.
- * This function works with modal and modeless extensions in all Adobe products, and panel extensions in Photoshop, InDesign, InCopy, Illustrator, Flash Pro and Dreamweaver.
- *
- * Since 6.1.0
- *
- * @param title The window title.
- */
-CSInterface.prototype.setWindowTitle = function (title) {
-  window.__adobe_cep__.invokeSync('setWindowTitle', title);
-};
-
-/**
- * Get the title of the extension window.
- * This function works with modal and modeless extensions in all Adobe products, and panel extensions in Photoshop, InDesign, InCopy, Illustrator, Flash Pro and Dreamweaver.
- *
- * Since 6.1.0
- *
- * @return The window title.
- */
-CSInterface.prototype.getWindowTitle = function () {
-  return window.__adobe_cep__.invokeSync('getWindowTitle', '');
 };

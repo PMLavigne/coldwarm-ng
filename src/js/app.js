@@ -1,15 +1,4 @@
-
-class Coldwarm {
-  constructor() {
-    this.currentColor = null;
-    this.csInterface = null;
-  }
-
-  init() {
-    this.csInterface = new CSInterface();
-    console.log(`Initialized ${this.csInterface.getExtensionID()}`);
-  }
-}
+import Coldwarm from './Coldwarm';
 
 const coldwarmInstance = new Coldwarm();
 
