@@ -1,7 +1,11 @@
 import Coldwarm from './Coldwarm';
 
-const coldwarmInstance = new Coldwarm();
 
 window.onload = () => {
-  coldwarmInstance.init();
+  try {
+    const coldwarmInstance = new Coldwarm();
+    coldwarmInstance.init();
+  } catch (err) {
+    console.error(err);
+  }
 };

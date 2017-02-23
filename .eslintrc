@@ -22,6 +22,16 @@
     "no-console": 0,
     "comma-dangle": 0,
     "max-len": [2, 200, 2],
-    "new-cap": ["error", {"capIsNew": false}]
+    "new-cap": ["error", {"capIsNew": false}],
+    "import/no-unresolved": [
+      2,
+      {
+        "ignore": [
+          "csinterface"
+        ]
+      }
+    ],
+    "import/no-extraneous-dependencies": 0,
+    "import/extensions": 0
   }
 }

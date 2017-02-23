@@ -3,7 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const extractCss = new ExtractTextPlugin('css/[name].css');
 
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: 'source-map',
   entry: {
     app: './src/js/app',
     style: './src/scss/style.scss'
@@ -11,6 +11,9 @@ module.exports = {
   output: {
     filename: 'js/[name].js',
     path: `${__dirname}/build`
+  },
+  externals: {
+    csinterface: 'CSInterface'
   },
   module: {
     rules: [

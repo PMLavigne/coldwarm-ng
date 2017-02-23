@@ -1,4 +1,4 @@
-import { CSInterface } from './lib/CSInterface';
+import CSInterface from 'csinterface';
 import ColorGrid from './ColorGrid';
 
 export default class Coldwarm {
