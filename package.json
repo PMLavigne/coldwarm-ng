@@ -1,0 +1,81 @@
+{
+  "name": "coldwarm-ng",
+  "version": "0.0.1",
+  "description": "HTML5 implementation of coldwarm photoshop plugin",
+  "scripts": {
+    "clean": "rimraf build && mkdirp build",
+    "lint": "eslint src --fix",
+    "copy": "npm run copy:html && npm run copy:manifest",
+    "copy:html": "cp src/index.html build/index.html",
+    "copy:manifest": "mkdirp build/CSXS && handlebars package.json < src/CSXS/manifest.xml.hbs > build/CSXS/manifest.xml",
+    "scss:dev": "mkdirp build/css && node-sass --source-map-contents --source-map-embed --source-comments --include-path src/scss -o build/css src/scss/style.scss",
+    "scss": "mkdirp build/css && node-sass -x  --include-path src/scss --output-style compressed -o build/css src/scss/style.scss",
+    "build:dev": "babel -s inline -d build/js src/js",
+    "build:debug": "npm run build:dev && babel -s inline -w --skip-initial-build -d build/js src/js",
+    "build": "babel -s false --no-comments --compact true --minified -o build/js/app.js src/js`",
+    "dev": "npm run clean && npm run lint && npm run copy && npm run scss:dev && npm run build:dev",
+    "debug": "npm run clean && npm run lint && npm run copy && npm run scss:dev && npm run build:debug",
+    "release": "npm run clean && npm run lint && npm run copy && npm run scss && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Lavigne <me@patrick.codes> (https://github.com/PMLavigne)",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.1.1",
+    "babel-plugin-rewire": "^1.0.0",
+    "babel-plugin-transform-decorators": "^6.22.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "babel-types": "^6.23.0",
+    "commander": "^2.9.0",
+    "eslint": "^3.16.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.0",
+    "handlebars": "^4.0.6",
+    "mkdirp": "^0.5.1",
+    "mz": "^2.6.0",
+    "node-sass": "^4.5.0",
+    "rimraf": "^2.6.0"
+  },
+  "csxsManifest": {
+    "displayName": "Coldwarm NG",
+    "bundleId": "codes.patrick.coldwarm-ng",
+    "runtime": {
+      "name": "CSXS",
+      "version": "6.0"
+    },
+    "hosts": {
+      "PHSP": "14",
+      "PHXS": "14"
+    },
+    "extensions": {
+      "picker": {
+        "resources": {
+          "script": "./js/app.js",
+          "main": "./index.html"
+        },
+        "ui": {
+          "type": "Panel",
+          "menu": "ColdWarm NG",
+          "geometry": {
+            "size": {
+              "height": 400,
+              "width": 400
+            }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "handlebars": "^4.0.6",
+    "mz": "^2.6.0"
+  }
+}

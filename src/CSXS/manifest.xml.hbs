@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ExtensionManifest
+    xmlns="ExtensionManifest"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="ExtensionManifest ExtensionManifest_v_6_0.xsd"
+    ExtensionBundleId="{{ data.csxsManifest.bundleId }}"
+    ExtensionBundleName="{{ data.csxsManifest.displayName }}"
+    ExtensionBundleVersion="{{ data.version }}"
+    Version="5.0">
+  {{#data.author}}
+    <Author>
+      {{^data.author.name}}{{ data.author }}{{/data.author.name}}
+      {{ data.author.name }}{{#data.author.email}} &lt;{{ data.author.email }}&gt;{{/data.author.email}}
+    </Author>
+  {{/data.author}}
+  <ExtensionList>
+    {{#each data.csxsManifest.extensions}}
+      <Extension Id="{{ data.csxsManifest.bundleId }}.{{ @key }}" Version="{{ data.version }}"/>
+    {{/each}}
+  </ExtensionList>
+  <ExecutionEnvironment>
+    <HostList>
+      {{#each data.csxsManifest.hosts}}
+        <Host Name="{{ @key }}" Version="{{ this }}"/>
+      {{/each}}
+    </HostList>
+    <LocaleList>
+      <Locale Code="All"/>
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="{{ data.csxsManifest.runtime.name }}" Version="{{ data.csxsManifest.runtime.version }}"/>
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+  <DispatchInfoList>
+    {{#each data.csxsManifest.extensions}}
+    <Extension Id="{{ data.csxsManifest.bundleId }}.{{ @key }}">
+      <DispatchInfo>
+        <Resources>
+          {{#this.resources.script}}
+            <ScriptPath>{{ this.resources.script }}</ScriptPath>
+          {{/this.resources.script}}
+          {{#this.resources.main}}
+            <MainPath>{{ this.resources.main }}</MainPath>
+          {{/this.resources.main}}
+        </Resources>
+        <UI>
+          <Type>{{ this.ui.type }}</Type>
+          <Menu>{{ this.ui.menu }}</Menu>
+          {{#this.ui.geometry}}
+            <Geometry>
+              {{#this.ui.geometry.size}}
+                <Size>
+                  <Height>{{ this.ui.geometry.size.height }}</Height>
+                  <Width>{{ this.ui.geometry.size.width }}</Width>
+                </Size>
+              {{/this.ui.geometry.size}}
+              {{#this.ui.geometry.min}}
+                <MinSize>
+                  <Height>{{ this.ui.geometry.min.height }}</Height>
+                  <Width>{{ this.ui.geometry.min.width }}</Width>
+                </MinSize>
+              {{/this.ui.geometry.min}}
+              {{#this.ui.geometry.max}}
+                <MaxSize>
+                  <Height>{{ this.ui.geometry.max.height }}</Height>
+                  <Width>{{ this.ui.geometry.max.width }}</Width>
+                </MaxSize>
+              {{/this.ui.geometry.max}}
+              {{#this.ui.geometry.screenPercentage}}
+                <ScreenPercentage>
+                  <Height>{{ this.ui.geometry.screenPercentage.height }}</Height>
+                  <Width>{{ this.ui.geometry.screenPercentage.width }}</Width>
+                </ScreenPercentage>
+              {{/this.ui.geometry.screenPercentage}}
+            </Geometry>
+          {{/this.ui.geometry}}
+          {{#this.ui.icons}}
+            <Icons>
+              {{#each this.ui.icons}}
+                <Icon Type="{{ @key }}">{{ this }}</Icon>
+              {{/each}}
+            </Icons>
+          {{/this.ui.icons}}
+        </UI>
+      </DispatchInfo>
+    </Extension>
+    {{/each}}
+  </DispatchInfoList>
+</ExtensionManifest>

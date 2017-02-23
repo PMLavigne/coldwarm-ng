@@ -2,3 +2,6 @@
 .DS_Store
 .idea/
 .debug
+node_modules
+build
+*.log
