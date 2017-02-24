@@ -12,25 +12,51 @@ body {
 }
 
 .coldwarm-body {
+  bottom: 0;
   display: flex;
   flex-direction: row;
   height: 100%;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
   width: 100%;
+}
 
-  .coldwarm-left-panel,
-  .coldwarm-right-panel {
-    background-color: $background-alpha-dark;
+.coldwarm-left-panel,
+.coldwarm-right-panel {
+  background-color: $background-alpha-dark;
+  display: flex;
+}
+
+.coldwarm-left-panel {
+  border-right: 2px solid $background-alpha-lighter;
+  flex: 1 0 auto;
+  flex-direction: column;
+
+  .coldwarm-grid-row {
+    border-bottom: 1px solid $background-alpha-lighter;
     display: flex;
-  }
-
-  .coldwarm-left-panel {
-    border-right: 2px solid $background-alpha-lighter;
     flex: 1 0 auto;
     flex-direction: row;
+
+    &:last-child {
+      border-bottom: 0;
+    }
   }
 
-  .coldwarm-right-panel {
-    flex: 1 1 15%;
-    flex-direction: column;
+  .coldwarm-grid-cell {
+    border-right: 1px solid $background-alpha-lighter;
+    display: inline-block;
+    flex: 1 0 auto;
+
+    &:last-child {
+      border-right: 0;
+    }
   }
+}
+
+.coldwarm-right-panel {
+  flex: 0 1 20%;
+  flex-direction: column;
 }
