@@ -3,6 +3,15 @@ import Cookie from 'js-cookie';
 
 export const COOKIE_PREFIX = 'coldwarm_';
 
+export const SettingDefaults = {
+  gridSize: 5,
+  temperatureStep: 12,
+  luminanceStep: 12,
+  showSaturation: true,
+  saturationStep: 1,
+  saturationHsb: false
+};
+
 export class Setting {
   constructor(key, value = null) {
     this._key = key;
@@ -147,7 +156,10 @@ export class Settings {
   }
 
   get(setting) {
-    return this._settings.has(setting) ? this._settings.get(setting).value : undefined;
+    if (this._settings.has(setting)) {
+      return this._settings.get(setting).value;
+    }
+    return SettingDefaults[setting];
   }
 
   set(setting, value) {
