@@ -1,0 +1,5 @@
+{
+  "verbose": true,
+  "collectCoverage": true,
+  "preset": "<rootDir>/test/config.json"
+}

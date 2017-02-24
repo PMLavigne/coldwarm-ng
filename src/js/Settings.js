@@ -39,25 +39,24 @@ export class Setting {
 
       case 'boolean':
       case 'number':
-      case 'string': {
+      case 'string':
         objString = this.value.toString();
-      } break;
+        break;
 
-      case 'date': {
+      case 'date':
         objString = this.value.getTime().toString();
-      } break;
+        break;
 
       case 'array':
       case 'object':
-      case 'regexp': {
         objString = JSON.stringify(this.value);
-      } break;
+        break;
     }
 
     return `${this.type}:${objString}`;
   }
 
-  unserialize(string) {
+  deserialize(string) {
     if (!string || string.indexOf(':') === -1) {
       throw new Error(`Invalid settings string: ${string}`);
     }
@@ -70,35 +69,34 @@ export class Setting {
       case 'function':
       case 'error':
       case 'undefined':
-      default: {
+      default:
         this.value = undefined;
-      } break;
+        break;
 
-      case 'null': {
+      case 'null':
         this.value = null;
-      } break;
+        break;
 
-      case 'boolean': {
-        this.value = Boolean(data);
-      } break;
+      case 'boolean':
+        this.value = (data === 'true');
+        break;
 
-      case 'number': {
+      case 'number':
         this.value = Number(data);
-      } break;
+        break;
 
-      case 'string': {
+      case 'string':
         this.value = data;
-      } break;
+        break;
 
-      case 'date': {
-        this.value = new Date(data);
-      } break;
+      case 'date':
+        this.value = new Date(Number(data));
+        break;
 
       case 'array':
       case 'object':
-      case 'regexp': {
         this.value = JSON.parse(data);
-      } break;
+        break;
     }
   }
 }
@@ -119,31 +117,44 @@ export class Settings {
 
   constructor() {
     this._settings = new Map();
-    this._load();
+    this.load();
   }
 
-  _load() {
+  load() {
     const allCookieData = Cookie.get();
+    this._settings.clear();
     if (!allCookieData) {
       return;
     }
-    this._settings.clear();
+
     $.each(allCookieData, (key, value) => {
       if (key.startsWith(COOKIE_PREFIX)) {
         const clippedKey = key.substring(COOKIE_PREFIX.length);
         const setting = new Setting(clippedKey);
         if (value && value.length) {
-          setting.unserialize(value);
+          setting.deserialize(value);
         }
         this._settings.set(clippedKey, setting);
       }
     });
   }
 
-  _save() {
+  save() {
     Settings.clearCookies();
     this._settings.forEach((key, value) => {
       Cookie.set(COOKIE_PREFIX + key, value.serialize());
     });
+  }
+
+  get(setting) {
+    return this._settings.has(setting) ? this._settings.get(setting).value : undefined;
+  }
+
+  set(setting, value) {
+    this._settings.set(setting, new Setting(setting, value));
+  }
+
+  unset(setting) {
+    this._settings.delete(setting);
   }
 }

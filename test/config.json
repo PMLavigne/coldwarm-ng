@@ -1,8 +1,5 @@
 {
   "moduleDirectories": ["src/js", "node_modules"],
   "roots": ["test/"],
-  "testRegex": ".*\\.test\\.js$",
-  "verbose": true,
-  "notify": true,
-  "collectCoverage": true
+  "testRegex": ".*\\.test\\.js$"
 }

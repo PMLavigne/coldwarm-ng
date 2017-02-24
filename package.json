@@ -17,7 +17,7 @@
     "debug": "npm run clean && npm run lint && npm run copy && npm run build:debug",
     "release": "npm run clean && npm run lint && npm run copy && npm run build && npm test",
     "test": "jest --no-cache -c test/config.json",
-    "test:dev": "node $NODE_DEBUG_OPTION node_modules/.bin/jest --runInBand --no-cache -c test/config.json"
+    "test:dev": "node $NODE_DEBUG_OPTION node_modules/.bin/jest --runInBand --no-cache -c test/config.dev.json 2>&1"
   },
   "author": "Patrick Lavigne <me@patrick.codes> (https://github.com/PMLavigne)",
   "license": "UNLICENSED",
