@@ -1,5 +1,6 @@
-
 import $ from 'jquery';
+
+import { Settings } from './Settings';
 
 export class ColorGridColor {
   constructor(r, g, b, a) {
@@ -46,7 +47,7 @@ export class ColorGridColor {
   }
 
   toCSS() {
-    return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
+    return `rgba(${Math.min(255, Math.round(this.r))}, ${Math.min(255, Math.round(this.g))}, ${Math.min(255, Math.round(this.b))}, ${Math.min(255, Math.round(this.a))})`;
   }
 
   adjustWarmth(factor) {
@@ -116,8 +117,7 @@ export class ColorGridSquare {
 }
 
 export class ColorGrid {
-  constructor(settings, targetSelector, gridSize) {
-    this._settings = settings;
+  constructor(targetSelector, gridSize) {
     this._color = null;
     this.gridSize = Number(gridSize);
     this.gridRows = [];
@@ -131,10 +131,6 @@ export class ColorGrid {
       console.log(`WARNING: ColorGrid.gridSize must be odd, adding 1 to ${gridSize}`);
       this.gridSize++;
     }
-  }
-
-  get settings() {
-    return this._settings;
   }
 
   get color() {
@@ -167,10 +163,12 @@ export class ColorGrid {
     }
 
     const curColor = this.color.copy();
-    const tempStep = this.settings.get('temperatureStep');
+    const tempStep = Settings.get('temperatureStep');
+    const lumaStep = Settings.get('luminanceStep');
     const relativeX = x - halfGridSize;
-    // const relativeY = y - halfGridSize;
+    const relativeY = y - halfGridSize;
 
+    curColor.addToRGB(relativeY * lumaStep);
     curColor.adjustWarmth(relativeX * tempStep);
 
     return curColor;

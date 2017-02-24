@@ -13,7 +13,8 @@ module.exports = {
     path: `${__dirname}/build`
   },
   externals: {
-    csinterface: 'CSInterface'
+    csinterface: 'CSInterface',
+    csevent: 'CSEvent'
   },
   module: {
     rules: [

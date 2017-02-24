@@ -107,12 +107,3 @@ describe('Setting', () => {
     });
   });
 });
-
-describe('Settings', () => {
-  describe('#constructor()', () => {
-    it('initializes the Settings object', () => {
-      const settings = new Settings();
-      expect(settings).toBeTruthy();
-    });
-  });
-});

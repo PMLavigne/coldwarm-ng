@@ -16,7 +16,8 @@
     "jest": true
   },
   "globals": {
-      "CSInterface": true
+      "CSInterface": true,
+      "CSEvent": true
   },
   "extends": "eslint-config-airbnb",
   "rules": {
@@ -30,7 +31,8 @@
       2,
       {
         "ignore": [
-          "csinterface"
+          "csinterface",
+          "csevent"
         ]
       }
     ],

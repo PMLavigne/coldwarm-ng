@@ -1,7 +1,6 @@
 import * as $ from 'jquery';
-import Cookie from 'js-cookie';
 
-export const COOKIE_PREFIX = 'coldwarm_';
+export const KEY_PREFIX = 'codes.patrick.coldwarm-ng.';
 
 export const SettingDefaults = {
   gridSize: 5,
@@ -13,6 +12,12 @@ export const SettingDefaults = {
 };
 
 export class Setting {
+  static parse(key, serializedValue) {
+    const newSetting = new Setting(key);
+    newSetting.deserialize(serializedValue);
+    return newSetting;
+  }
+
   constructor(key, value = null) {
     this._key = key;
     this.value = value;
@@ -111,62 +116,21 @@ export class Setting {
 }
 
 export class Settings {
+  static get(setting) {
+    const storedVal = localStorage.getItem(KEY_PREFIX + setting);
 
-  static clearCookies() {
-    const allCookieData = Cookie.get();
-    if (!allCookieData) {
-      return;
-    }
-    $.each(allCookieData, (key) => {
-      if (key.startsWith(COOKIE_PREFIX)) {
-        Cookie.remove(key);
-      }
-    });
-  }
-
-  constructor() {
-    this._settings = new Map();
-    this.load();
-  }
-
-  load() {
-    const allCookieData = Cookie.get();
-    this._settings.clear();
-    if (!allCookieData) {
-      return;
+    if (storedVal === null) {
+      return SettingDefaults[setting];
     }
 
-    $.each(allCookieData, (key, value) => {
-      if (key.startsWith(COOKIE_PREFIX)) {
-        const clippedKey = key.substring(COOKIE_PREFIX.length);
-        const setting = new Setting(clippedKey);
-        if (value && value.length) {
-          setting.deserialize(value);
-        }
-        this._settings.set(clippedKey, setting);
-      }
-    });
+    return Setting.parse(setting, storedVal).value;
   }
 
-  save() {
-    Settings.clearCookies();
-    this._settings.forEach((key, value) => {
-      Cookie.set(COOKIE_PREFIX + key, value.serialize());
-    });
+  static set(setting, value) {
+    localStorage.setItem(KEY_PREFIX + setting, (new Setting(setting, value)).serialize());
   }
 
-  get(setting) {
-    if (this._settings.has(setting)) {
-      return this._settings.get(setting).value;
-    }
-    return SettingDefaults[setting];
-  }
-
-  set(setting, value) {
-    this._settings.set(setting, new Setting(setting, value));
-  }
-
-  unset(setting) {
-    this._settings.delete(setting);
+  static unset(setting) {
+    localStorage.removeItem(KEY_PREFIX + setting);
   }
 }

@@ -35,23 +35,23 @@ body {
   flex-direction: column;
 
   .coldwarm-grid-row {
-    border-bottom: 1px solid $background-alpha-lighter;
     display: flex;
     flex: 1 0 auto;
     flex-direction: row;
+    margin-bottom: 1px;
 
     &:last-child {
-      border-bottom: 0;
+      margin-bottom: 0;
     }
   }
 
   .coldwarm-grid-cell {
-    border-right: 1px solid $background-alpha-lighter;
+    margin-right: 1px;
     display: inline-block;
     flex: 1 0 auto;
 
     &:last-child {
-      border-right: 0;
+      margin-right: 0;
     }
   }
 }
