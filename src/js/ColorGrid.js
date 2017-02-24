@@ -58,7 +58,7 @@ export class ColorGridSquare {
 
 export class ColorGrid {
   constructor(targetSelector, gridSize) {
-    this.color = null;
+    this._color = null;
     this.gridSize = Number(gridSize);
     this.gridRows = [];
     this.$el = $(targetSelector);
@@ -73,8 +73,12 @@ export class ColorGrid {
     }
   }
 
-  setColor(newColor) {
-    this.color = newColor;
+  get color() {
+    return this._color;
+  }
+
+  set color(newColor) {
+    this._color = newColor;
     this.renderGrid();
   }
 

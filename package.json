@@ -15,8 +15,9 @@
     "build": "webpack -p && rm build/js/style.js",
     "dev": "npm run clean && npm run lint && npm run copy && npm run build:dev",
     "debug": "npm run clean && npm run lint && npm run copy && npm run build:debug",
-    "release": "npm run clean && npm run lint && npm run copy && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "release": "npm run clean && npm run lint && npm run copy && npm run build && npm test",
+    "test": "jest --no-cache -c test/config.json",
+    "test:dev": "node $NODE_DEBUG_OPTION node_modules/.bin/jest --runInBand --no-cache -c test/config.json"
   },
   "author": "Patrick Lavigne <me@patrick.codes> (https://github.com/PMLavigne)",
   "license": "UNLICENSED",
@@ -26,6 +27,7 @@
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
+    "babel-jest": "^19.0.0",
     "babel-loader": "^6.3.2",
     "babel-plugin-rewire": "^1.0.0",
     "babel-plugin-transform-decorators": "^6.22.0",
@@ -43,6 +45,7 @@
     "extract-text-webpack-plugin": "^2.0.0-rc.3",
     "handlebars": "^4.0.6",
     "hbsutil": "^0.3.0",
+    "jest-cli": "^19.0.2",
     "mkdirp": "^0.5.1",
     "mz": "^2.6.0",
     "node-sass": "^4.5.0",
@@ -82,6 +85,7 @@
     }
   },
   "dependencies": {
-    "jquery": "^3.1.1"
+    "jquery": "^3.1.1",
+    "js-cookie": "^2.1.3"
   }
 }

@@ -12,13 +12,15 @@
   "env": {
     "es6": true,
     "browser": true,
-    "shared-node-browser": true
+    "shared-node-browser": true,
+    "jest": true
   },
   "globals": {
       "CSInterface": true
   },
   "extends": "eslint-config-airbnb",
   "rules": {
+    "no-underscore-dangle": ["error", { "allowAfterThis": true }],
     "no-console": 0,
     "no-plusplus": 0,
     "comma-dangle": 0,
