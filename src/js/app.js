@@ -1,5 +1,7 @@
 import Coldwarm from './Coldwarm';
 
+require('babel-core/register');
+require('babel-polyfill');
 
 window.onload = () => {
   try {

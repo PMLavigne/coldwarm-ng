@@ -5,9 +5,10 @@
   "scripts": {
     "clean": "rimraf build && mkdirp build",
     "lint": "eslint src --fix",
-    "copy": "npm run copy:html && npm run copy:lib && npm run copy:manifest",
+    "copy": "npm run copy:html && npm run copy:lib && npm run copy:backendScripts && npm run copy:manifest",
     "copy:html": "cp src/index.html build/index.html",
     "copy:lib": "mkdirp build/lib && cp -r src/lib/* build/lib",
+    "copy:backendScripts": "mkdirp build/jsx && cp -r src/jsx/* build/jsx/",
     "copy:manifest": "mkdirp build/CSXS && hbsutil -s -v -e -d build/CSXS -f package.json src/CSXS/manifest.xml.hbs",
     "copy:debugConf": "touch .debug && cp .debug build/.debug",
     "build:dev": "npm run copy:debugConf && webpack --debug --devtool source-map",
@@ -68,7 +69,8 @@
     "extensions": {
       "picker": {
         "resources": {
-          "main": "./index.html"
+          "main": "./index.html",
+          "script": "./jsx/ColdwarmBackend.jsx"
         },
         "ui": {
           "type": "Panel",
@@ -84,6 +86,7 @@
     }
   },
   "dependencies": {
+    "babel-polyfill": "^6.23.0",
     "jquery": "^3.1.1"
   }
 }

@@ -5,7 +5,7 @@ const extractCss = new ExtractTextPlugin('css/[name].css');
 module.exports = {
   devtool: 'source-map',
   entry: {
-    app: './src/js/app',
+    app: ['babel-polyfill', './src/js/app'],
     style: './src/scss/style.scss'
   },
   output: {
