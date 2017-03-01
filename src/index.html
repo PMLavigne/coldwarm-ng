@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" type="text/css" href="lib/css/theme.css" id="hostStyle" />
+    <link rel="stylesheet" type="text/css" href="lib/css/dark.css" id="theme" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
   </head>
   <body>
@@ -10,6 +11,48 @@
     <section class="coldwarm-left-panel" id="coldwarm-left-panel">&nbsp;</section>
     <section class="coldwarm-right-panel" id="coldwarm-right-panel">&nbsp;</section>
   </section>
+  <div class="coldwarm-config-panel active" id="coldwarm-settings-panel">
+    <section class="coldwarm-config hostBgd">
+      <header class="coldwarm-config-header">
+        <h1>Configuration</h1>
+        <div class="coldwarm-config-close-container">
+          <button id="closeBttn">Close</button>
+        </div>
+      </header>
+      <section class="coldwarm-config-body">
+        <div class="coldwarm-config-switch">
+          <label class="switch-label">Show saturation</label>
+          <label class="topcoat-switch">
+            <input id="showSaturationControl" type="checkbox" class="topcoat-switch__input">
+            <div class="topcoat-switch__toggle"></div>
+          </label>
+        </div>
+
+        <div class="coldwarm-config-number">
+          <label for="gridSizeControl">Grid Size</label>
+          <input type="number"  id="gridSizeControl" />
+        </div>
+        <div class="coldwarm-config-range">
+          <label for="temperatureStepControl">Temperature Step</label>
+          <input type="range" class="topcoat-range-input" id="temperatureStepControl" />
+        </div>
+
+        <div class="coldwarm-config-range">
+          <label for="luminanceStepControl">Luminance Step</label>
+          <input type="range" class="topcoat-range-input" id="luminanceStepControl" />
+        </div>
+
+        <div class="coldwarm-config-range">
+          <label for="saturationStepControl">Saturation Step</label>
+          <input type="range" class="topcoat-range-input" id="saturationStepControl" />
+        </div>
+
+        <div class="coldwarm-config-button">
+          <button id="resetDefaults">Defaults</button>
+        </div>
+      </section>
+    </section>
+  </div>
   </body>
   <script type="text/javascript" src="lib/js/CSInterface.js"></script>
   <script type="text/javascript" src="lib/js/themeManager.js"></script>

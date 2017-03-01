@@ -115,6 +115,17 @@ export class Setting {
 }
 
 export class Settings {
+
+  static onSettingChange = null;
+
+  static clear() {
+    Object.keys(SettingDefaults)
+          .forEach(key => localStorage.removeItem(KEY_PREFIX + key));
+    if (Settings.onSettingChange) {
+      Settings.onSettingChange();
+    }
+  }
+
   static get(setting) {
     const storedVal = localStorage.getItem(KEY_PREFIX + setting);
 
@@ -127,9 +138,15 @@ export class Settings {
 
   static set(setting, value) {
     localStorage.setItem(KEY_PREFIX + setting, (new Setting(setting, value)).serialize());
+    if (Settings.onSettingChange) {
+      Settings.onSettingChange();
+    }
   }
 
   static unset(setting) {
     localStorage.removeItem(KEY_PREFIX + setting);
+    if (Settings.onSettingChange) {
+      Settings.onSettingChange();
+    }
   }
 }

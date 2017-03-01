@@ -3,19 +3,23 @@ import themeManager from 'thememanager';
 import Backend from './Backend';
 import ColorGrid from './ColorGrid';
 import ColorColumn from './ColorColumn';
+import { Settings } from './Settings';
+import SettingsPanel from './SettingsPanel';
 
 
 export default class Coldwarm {
   static init() {
     themeManager.init();
     Coldwarm.instance = new Coldwarm();
+    Settings.onSettingChange = Coldwarm.instance.onSettingChange.bind(Coldwarm.instance);
   }
 
   constructor() {
     this._backend = new Backend(() => this.refreshColor());
     this._grid = new ColorGrid('#coldwarm-left-panel', color => this.backend.setForegroundColor(color));
     this._column = new ColorColumn('#coldwarm-right-panel', color => this.backend.setForegroundColor(color));
-
+    this._settingsPanel = new SettingsPanel('#coldwarm-settings-panel');
+    this.settingsPanel.init();
     this.backend
         .register()
         .catch(err => console.error('Error setting up Backend: ', err))
@@ -35,6 +39,10 @@ export default class Coldwarm {
     return this._column;
   }
 
+  get settingsPanel() {
+    return this._settingsPanel;
+  }
+
   async refreshColor() {
     try {
       const newColor = await this.backend.getForegroundColor();
@@ -44,6 +52,17 @@ export default class Coldwarm {
       console.error('Error loading color: ');
       console.error(err);
     }
+  }
+
+  async redraw() {
+    this.grid.renderGrid();
+    this.column.render();
+    await this.refreshColor();
+  }
+
+  onSettingChange() {
+    this.redraw()
+        .catch(err => console.error('Error reloading Coldwarm: ', err));
   }
 
 }
