@@ -2,20 +2,24 @@
  * @file Simple backend handlers for conveying colors to and from the frontend.
  */
 
-function setColor(type, r, g, b, a) {
-  var solidColor = new SolidColor();
-  solidColor.rgb = new RGBColor(r, g, b, a);
+function setColor(type, r, g, b) {
 
+  var color;
   switch(type) {
-    case 'foreground':
-      app.foregroundColor = solidColor;
-      break;
-    case 'background':
-      app.backgroundColor = solidColor;
-      break;
+    case 'foreground': {
+      color = app.foregroundColor;
+    } break;
+    case 'background': {
+      color = app.backgroundColor;
+    } break;
     default:
       alert('Coldwarm-NG: Invalid event received that requested to set ' + type + ' color');
+      return;
   }
+
+  color.rgb.red = r;
+  color.rgb.green = g;
+  color.rgb.blue = b;
 }
 
 function getColor(type) {

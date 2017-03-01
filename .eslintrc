@@ -21,7 +21,7 @@
   },
   "extends": "eslint-config-airbnb",
   "rules": {
-    "no-underscore-dangle": ["error", { "allowAfterThis": true }],
+    "no-underscore-dangle": 0,
     "no-console": 0,
     "no-plusplus": 0,
     "comma-dangle": 0,
@@ -32,7 +32,8 @@
       {
         "ignore": [
           "csinterface",
-          "csevent"
+          "csevent",
+          "thememanager"
         ]
       }
     ],

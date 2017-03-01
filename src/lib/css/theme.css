@@ -1,0 +1,42 @@
+/*
+ * @file theme.css from ccext-boilerplate, which can be found here: https://github.com/davidderaedt/ccext-boilerplate
+ *
+ * This file's license can be found in the LICENSE.extra file at the root of this project.
+ *
+ * This stylesheet represents CC app styles
+ * Empty classes will be edited at runtime with dynamic app values
+ */
+button
+{
+    border:1px solid;
+    border-radius:2px;
+    height:20px;
+    vertical-align:bottom;
+    font-family:inherit;
+    color:inherit;
+    font-size:inherit;
+}
+
+input[type="radio"] {
+    -webkit-appearance: none;
+    display:inline-block;
+    margin:2px;
+    width:12px;
+    height:12px;
+    background-color: #AAAAAA;
+    border-color: #AAAAAA;
+    border-style:solid;
+    border-radius:6px;
+}
+input[type="radio"] + label{
+    display:inline-block;
+    vertical-align:super;
+}
+input[type="radio"]:checked {
+    background-color: #333333;
+}
+
+.hostFont{}
+.hostBgd{}
+.hostElt{}
+

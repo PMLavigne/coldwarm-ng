@@ -1,5 +1,4 @@
 
-
 $background-alpha-lighter: rgba(255, 255, 255, 0.25);
 $background-alpha-light: rgba(255, 255, 255, 0.1);
 $background-alpha-dark: rgba(0, 0, 0, 0.1);
@@ -20,17 +19,18 @@ body {
   position: absolute;
   right: 0;
   top: 0;
+  -webkit-user-select: none;
+  user-select: none;
   width: 100%;
 }
 
 .coldwarm-left-panel,
 .coldwarm-right-panel {
-  background-color: $background-alpha-dark;
   display: flex;
 }
 
 .coldwarm-left-panel {
-  border-right: 2px solid $background-alpha-lighter;
+  border-right: 2px solid $background-alpha-darker;
   flex: 1 0 auto;
   flex-direction: column;
 
@@ -46,9 +46,10 @@ body {
   }
 
   .coldwarm-grid-cell {
-    margin-right: 1px;
+    cursor: pointer;
     display: inline-block;
     flex: 1 0 auto;
+    margin-right: 1px;
 
     &:last-child {
       margin-right: 0;

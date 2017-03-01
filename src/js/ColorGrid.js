@@ -47,9 +47,21 @@ export class ColorGridColor {
   }
 
   toCSS() {
-    return `rgba(${Math.min(255, Math.round(this.r))}, ${Math.min(255, Math.round(this.g))}, ${Math.min(255, Math.round(this.b))}, ${Math.min(255, Math.round(this.a))})`;
+    return `rgba(${this.toRoundedRGBA().join(', ')})`;
   }
 
+  toString() {
+    return this.toCSS();
+  }
+
+  toRoundedRGBA() {
+    return [
+      Math.min(255, Math.round(this.r)),
+      Math.min(255, Math.round(this.g)),
+      Math.min(255, Math.round(this.b)),
+      Math.min(255, Math.round(this.a))
+    ];
+  }
   adjustWarmth(factor) {
     const brightness = this.getLuminanceGrey();
 
@@ -89,6 +101,10 @@ export class ColorGridRow {
     return this.squares[index];
   }
 
+  refresh() {
+    this.squares.forEach(square => square.refresh());
+  }
+
   render() {
     this.$el = $('<div />').attr('class', 'coldwarm-grid-row')
                            .attr('id', `coldwarm-grid-row-${this.x}`);
@@ -100,36 +116,53 @@ export class ColorGridRow {
 }
 
 export class ColorGridSquare {
-  constructor(x, y, color) {
+  constructor(x, y, colorFunc, onSelectCallback) {
     this.x = x;
     this.y = y;
-    this.color = color;
+    this.colorFunc = colorFunc;
     this.$el = null;
+    this.onSelect = onSelectCallback;
+  }
+
+  get color() {
+    return this.colorFunc();
   }
 
   render() {
     this.$el = $('<div />').attr('class', 'coldwarm-grid-cell')
                            .attr('id', `coldwarm-grid-cell-${this.x}-${this.y}`)
                            .css('background-color', this.color ? this.color.toCSS() : 'transparent')
-                           .html('&nbsp;');
+                           .html('&nbsp;')
+                           .on('click', this.onClick.bind(this));
     return this.$el;
+  }
+
+  refresh() {
+    this.$el.css('background-color', this.color ? this.color.toCSS() : 'transparent');
+  }
+
+  onClick() {
+    if (this.onSelect) {
+      this.onSelect(this.color);
+    }
   }
 }
 
 export class ColorGrid {
-  constructor(targetSelector, gridSize) {
+  constructor(targetSelector, onSelectCallback) {
     this._color = null;
-    this.gridSize = Number(gridSize);
-    this.gridRows = [];
+    this._onSelectCallback = onSelectCallback;
+    this._gridSize = Number(Settings.get('gridSize'));
+    this._gridRows = [];
     this.$el = $(targetSelector);
 
     if (!this.$el || !this.$el.length) {
       throw new Error(`Color grid target ${targetSelector} does not exist`);
     }
 
-    if (this.gridSize % 2 === 0) {
-      console.log(`WARNING: ColorGrid.gridSize must be odd, adding 1 to ${gridSize}`);
-      this.gridSize++;
+    if (this._gridSize % 2 === 0) {
+      console.log(`WARNING: ColorGrid.gridSize must be odd, adding 1 to ${this._gridSize}`);
+      this._gridSize++;
     }
   }
 
@@ -139,25 +172,33 @@ export class ColorGrid {
 
   set color(newColor) {
     this._color = newColor;
-    this.renderGrid();
+    this.refresh();
+  }
+
+  refresh() {
+    if (!this._gridRows.length) {
+      this.renderGrid();
+    } else {
+      this._gridRows.forEach(row => row.refresh());
+    }
   }
 
   renderGrid() {
     this.$el.empty();
-    this.gridRows = [];
+    this._gridRows = [];
 
-    for (let x = 0; x < this.gridSize; ++x) {
+    for (let x = 0; x < this._gridSize; ++x) {
       const row = new ColorGridRow(x);
-      for (let y = 0; y < this.gridSize; ++y) {
-        row.addSquare(new ColorGridSquare(x, y, this.getColorFor(x, y)));
+      for (let y = 0; y < this._gridSize; ++y) {
+        row.addSquare(new ColorGridSquare(x, y, () => this.getColorFor(x, y), this._onSelectCallback));
       }
-      this.gridRows.push(row);
+      this._gridRows.push(row);
       this.$el.append(row.render());
     }
   }
 
   getColorFor(x, y) {
-    const halfGridSize = (this.gridSize - 1) / 2;
+    const halfGridSize = (this._gridSize - 1) / 2;
     if (x === halfGridSize && y === halfGridSize) {
       return this.color;
     }

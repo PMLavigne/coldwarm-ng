@@ -10,3 +10,7 @@ linters:
   NameFormat:
     enabled: false
     function_convention: camel_case
+  VendorPrefix:
+    enabled: false
+  PropertySortOrder:
+    enabled: true

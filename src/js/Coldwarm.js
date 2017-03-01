@@ -1,25 +1,100 @@
 import CSInterface from 'csinterface';
+import themeManager from 'thememanager';
 import { ColorGrid, ColorGridColor } from './ColorGrid';
 
 
+const ColorChangeBindEvents = [
+  'set ',
+  'setd',
+  'Exch',
+  'Rset'
+];
+
 export default class Coldwarm {
   static init() {
+    themeManager.init();
     Coldwarm.instance = new Coldwarm();
+  }
+
+
+  static getEventIdFromJsonEvent(eventString) {
+    const splitData = (eventString || '').replace(/ver[1],/, '');
+
+    if (!splitData) {
+      throw new Error('No data returned from photoshopCallback');
+    }
+
+    const parsedData = JSON.parse(splitData);
+
+    if (!parsedData.eventID) {
+      throw new Error('Invalid data returned from photoshopCallback');
+    }
+
+    return parsedData.eventID;
+  }
+
+  static getEventIdFromOldEvent(eventData) {
+    const splitData = (eventData || '').split(',');
+
+    if (!splitData) {
+      throw new Error('No data returned from photoshopCallback');
+    }
+
+    const eventId = splitData[0];
+
+    if (!eventId) {
+      throw new Error('Invalid data returned from photoshopCallback');
+    }
+
+    return eventId;
   }
 
   constructor() {
     this._csInterface = new CSInterface();
+    this._appVersion = null;
     this._stringIdCache = {};
     this._typeIdCache = {};
-    this._grid = new ColorGrid('#coldwarm-left-panel', 5);
-    console.log(`Initialized ${this.csInterface.getExtensionID()}`);
-    this.register(true).then(() => console.log('Done'));
+    this._grid = new ColorGrid('#coldwarm-left-panel', color => this.setForegroundColor(color));
+    this.register()
+        .then(async () => this.refreshColor())
+        .then(() => console.log(`Initialized ${this.csInterface.getExtensionID()}`));
   }
 
   get csInterface() {
     return this._csInterface;
   }
 
+  get appVersion() {
+    if (this._appVersion === null) {
+      const versionNumber = this.csInterface.getHostEnvironment().appVersion;
+      if (!versionNumber) {
+        this._appVersion = {
+          major: 0,
+          minor: 0,
+          patch: 0
+        };
+        console.error('Failed to get appVersion from host environment!');
+      } else {
+        const parsed = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?.*?$/.exec(versionNumber);
+        if (!parsed) {
+          this._appVersion = {
+            major: 0,
+            minor: 0,
+            patch: 0
+          };
+          console.error(`Failed to parse appVersion ${versionNumber}`);
+        } else {
+          this._appVersion = {
+            major: Number(parsed[1]),
+            minor: Number(parsed[2] || '0'),
+            patch: Number(parsed[3] || '0')
+          };
+        }
+      }
+    }
+
+    return this._appVersion;
+  }
 
   get grid() {
     return this._grid;
@@ -43,7 +118,7 @@ export default class Coldwarm {
     return this.getColor('background');
   }
 
-  async getColor(type) {
+  async getColor(type = 'foreground') {
     return new Promise((resolve, reject) => {
       this.csInterface.evalScript(`getColor('${type}');`, (color) => {
         if (!color) {
@@ -59,13 +134,31 @@ export default class Coldwarm {
     });
   }
 
+  async setForegroundColor(color) {
+    return this.setColor('foreground', color);
+  }
+
+  async setBackgroundColor(color) {
+    return this.setColor('background', color);
+  }
+
+  async setColor(type = 'foreground', color = null) {
+    return new Promise((resolve) => {
+      const toSet = color || this.grid.color;
+      console.log(`Selected color: ${toSet.toRoundedRGBA().join(', ')}`);
+      this.csInterface.evalScript(`setColor('${type}', ${toSet.toRoundedRGBA().join(', ')});`, () => {
+        resolve();
+      });
+    });
+  }
+
   async convertTypeId(id) {
     return new Promise((resolve) => {
       if (this._typeIdCache[id]) {
         resolve(this._typeIdCache[id]);
         return;
       }
-      this.csInterface.evalScript(`typeIDToStringID(${Number(id)});`, (converted) => {
+      this.csInterface.evalScript(`app.typeIDToStringID(${Number(id)});`, (converted) => {
         this._stringIdCache[converted] = id;
         this._typeIdCache[id] = converted;
         resolve(converted);
@@ -79,7 +172,12 @@ export default class Coldwarm {
         resolve(this._stringIdCache[id]);
         return;
       }
-      this.csInterface.evalScript(`charIDToTypeID('${id.replace(/'/g, '\\\'')}');`, (converted) => {
+      this.csInterface.evalScript(`charIDToTypeID('${id}');`, (converted) => {
+        if (converted === 'EvalScript error.') {
+          console.error(`WARN: Got ${converted} for ID ${id}`);
+          resolve(converted);
+          return;
+        }
         this._stringIdCache[id] = converted;
         this._typeIdCache[converted] = id;
         resolve(converted);
@@ -88,43 +186,54 @@ export default class Coldwarm {
   }
 
   photoshopCallback(e) {
-    const splitData = (e.data || '').split(',');
+    try {
+      const eventID = this.appVersion.major >= 16 ? Coldwarm.getEventIdFromJsonEvent(e.data) :
+                                                    Coldwarm.getEventIdFromOldEvent(e.data);
 
-    if (!splitData) {
-      console.error('No data returned from photoshopCallback');
-      return;
-    }
 
-    this.convertTypeId(splitData[0])
-        .then((id) => {
-          switch (id.trim()) {
-            case 'set':
-            case 'setd':
-            case 'dlDocInfoChanged':
+      this.convertTypeId(eventID)
+          .then((id) => {
+            if (ColorChangeBindEvents.find(ev => id.trim() === ev.trim())) {
               this.refreshColor();
-              break;
-            default:
-              console.log(`Ignoring event: ${id}`);
-              break;
-          }
-        });
+            } else {
+              console.log(`Ignoring unexpected event: ${id}`);
+            }
+          });
+    } catch (err) {
+      console.error('Error processing photoshop callback:', err);
+    }
   }
 
-  async register(inOn) {
-    let event;
-    if (inOn) {
-      event = new CSEvent('com.adobe.PhotoshopRegisterEvent', 'APPLICATION');
-    } else {
-      event = new CSEvent('com.adobe.PhotoshopUnRegisterEvent', 'APPLICATION');
-    }
-    event.extensionId = 'codes.patrick.coldwarm-ng';
 
-    event.data = (await Promise.all([
-      this.convertStringId('set'),
-      this.convertStringId('setd'),
-      this.convertStringId('dlDocInfoChanged')
-    ])).join(',');
-    this.csInterface.addEventListener('PhotoshopCallback', e => this.photoshopCallback(e));
+  makePersistent() {
+    const event = new CSEvent('com.adobe.PhotoshopPersistent', 'APPLICATION');
+    event.extensionId = this.csInterface.getExtensionID();
     this.csInterface.dispatchEvent(event);
+  }
+
+  async register() {
+    this.makePersistent();
+
+    if (this.appVersion.major >= 16) {
+      // New way, as of Photoshop 2015
+      this.csInterface.addEventListener(`com.adobe.PhotoshopJSONCallback${this.csInterface.getExtensionID()}`,
+                                        e => this.photoshopCallback(e));
+    } else {
+      // Old way
+      this.csInterface.addEventListener('com.adobe.PhotoshopCallback}',
+                                        e => this.photoshopCallback(e));
+    }
+
+    const types = (await Promise.all(ColorChangeBindEvents.map(str => this.convertStringId(str))));
+
+    types.forEach((curEvent) => {
+      if (curEvent === 'EvalScript error.') {
+        return;
+      }
+      const event = new CSEvent('com.adobe.PhotoshopRegisterEvent', 'APPLICATION');
+      event.extensionId = this.csInterface.getExtensionID();
+      event.data = `${curEvent}`;
+      this.csInterface.dispatchEvent(event);
+    });
   }
 }

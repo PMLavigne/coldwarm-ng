@@ -14,7 +14,8 @@ module.exports = {
   },
   externals: {
     csinterface: 'CSInterface',
-    csevent: 'CSEvent'
+    csevent: 'CSEvent',
+    thememanager: 'themeManager'
   },
   module: {
     rules: [
