@@ -1,90 +1,8 @@
 import $ from 'jquery';
 
 import { Settings } from './Settings';
+import ColorGridSquare from './ColorGridSquare';
 
-export class ColorGridColor {
-  constructor(r, g, b, a) {
-    this._r = r;
-    this._g = g;
-    this._b = b;
-    this._a = a;
-  }
-
-  get r() {
-    return this._r;
-  }
-
-  set r(r) {
-    this._r = Math.min(Math.max(r, 0), 255);
-  }
-
-  get g() {
-    return this._g;
-  }
-
-  set g(g) {
-    this._g = Math.min(Math.max(g, 0), 255);
-  }
-
-  get b() {
-    return this._b;
-  }
-
-  set b(b) {
-    this._b = Math.min(Math.max(b, 0), 255);
-  }
-
-  get a() {
-    return this._a;
-  }
-
-  set a(a) {
-    this._a = Math.min(Math.max(a, 0), 255);
-  }
-
-  copy() {
-    return new ColorGridColor(this.r, this.g, this.b, this.a);
-  }
-
-  toCSS() {
-    return `rgba(${this.toRoundedRGBA().join(', ')})`;
-  }
-
-  toString() {
-    return this.toCSS();
-  }
-
-  toRoundedRGBA() {
-    return [
-      Math.min(255, Math.round(this.r)),
-      Math.min(255, Math.round(this.g)),
-      Math.min(255, Math.round(this.b)),
-      Math.min(255, Math.round(this.a))
-    ];
-  }
-  adjustWarmth(factor) {
-    const brightness = this.getLuminanceGrey();
-
-    this.r += factor;
-    this.b -= factor;
-
-    this.addToRGB((brightness - this.getLuminanceGrey()) * 2);
-  }
-
-  /**
-   * Add amount to r, g, b channels
-   * @param amount
-   */
-  addToRGB(amount) {
-    this.r += amount;
-    this.g += amount;
-    this.b += amount;
-  }
-
-  getLuminanceGrey() {
-    return (0.2126 * this.r) + (0.7152 * this.g) + (0.0722 * this.b);
-  }
-}
 
 export class ColorGridRow {
   constructor(x) {
@@ -115,38 +33,6 @@ export class ColorGridRow {
   }
 }
 
-export class ColorGridSquare {
-  constructor(x, y, colorFunc, onSelectCallback) {
-    this.x = x;
-    this.y = y;
-    this.colorFunc = colorFunc;
-    this.$el = null;
-    this.onSelect = onSelectCallback;
-  }
-
-  get color() {
-    return this.colorFunc();
-  }
-
-  render() {
-    this.$el = $('<div />').attr('class', 'coldwarm-grid-cell')
-                           .attr('id', `coldwarm-grid-cell-${this.x}-${this.y}`)
-                           .css('background-color', this.color ? this.color.toCSS() : 'transparent')
-                           .html('&nbsp;')
-                           .on('click', this.onClick.bind(this));
-    return this.$el;
-  }
-
-  refresh() {
-    this.$el.css('background-color', this.color ? this.color.toCSS() : 'transparent');
-  }
-
-  onClick() {
-    if (this.onSelect) {
-      this.onSelect(this.color);
-    }
-  }
-}
 
 export class ColorGrid {
   constructor(targetSelector, onSelectCallback) {

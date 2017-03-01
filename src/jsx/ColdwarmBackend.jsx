@@ -2,7 +2,7 @@
  * @file Simple backend handlers for conveying colors to and from the frontend.
  */
 
-function setColor(type, r, g, b) {
+function setColor(type, r, g, b, a) {
 
   var color;
   switch(type) {
@@ -20,6 +20,10 @@ function setColor(type, r, g, b) {
   color.rgb.red = r;
   color.rgb.green = g;
   color.rgb.blue = b;
+
+  if (a !== null) {
+    color.rgb.alpha = a;
+  }
 }
 
 function getColor(type) {
@@ -40,6 +44,6 @@ function getColor(type) {
     '"red": ' + color.rgb.red + ',' +
     '"blue": ' + color.rgb.blue + ',' +
     '"green": ' + color.rgb.green + ',' +
-    '"alpha": ' + (color.rgb.alpha === undefined ? 1 : color.rgb.alpha) +
+    '"alpha": ' + (color.rgb.alpha === undefined ? null : color.rgb.alpha) +
   '}';
 }
