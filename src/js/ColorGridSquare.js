@@ -16,14 +16,14 @@ export default class ColorGridSquare {
   render() {
     this.$el = $('<div />').attr('class', 'coldwarm-grid-cell')
                            .attr('id', `coldwarm-grid-cell-${this.x}-${this.y}`)
-                           .css('background-color', this.color ? this.color.toCSS() : 'transparent')
+                           .css('background-color', this.color ? this.color.asCSS : 'transparent')
                            .html('&nbsp;')
                            .on('click', this.onClick.bind(this));
     return this.$el;
   }
 
   refresh() {
-    this.$el.css('background-color', this.color ? this.color.toCSS() : 'transparent');
+    this.$el.css('background-color', this.color ? this.color.asCSS : 'transparent');
   }
 
   onClick() {

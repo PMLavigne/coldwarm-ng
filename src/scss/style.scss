@@ -29,8 +29,13 @@ body {
   display: flex;
 }
 
+.coldwarm-grid-cell {
+  cursor: pointer;
+  display: inline-block;
+  flex: 1 0 auto;
+}
+
 .coldwarm-left-panel {
-  border-right: 2px solid $background-alpha-darker;
   flex: 1 0 auto;
   flex-direction: column;
 
@@ -38,26 +43,11 @@ body {
     display: flex;
     flex: 1 0 auto;
     flex-direction: row;
-    margin-bottom: 1px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  .coldwarm-grid-cell {
-    cursor: pointer;
-    display: inline-block;
-    flex: 1 0 auto;
-    margin-right: 1px;
-
-    &:last-child {
-      margin-right: 0;
-    }
   }
 }
 
 .coldwarm-right-panel {
-  flex: 0 1 20%;
+  flex: 0 1 15%;
   flex-direction: column;
+  margin-left: 5px;
 }

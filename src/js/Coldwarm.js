@@ -1,7 +1,8 @@
 
 import themeManager from 'thememanager';
 import Backend from './Backend';
-import { ColorGrid } from './ColorGrid';
+import ColorGrid from './ColorGrid';
+import ColorColumn from './ColorColumn';
 
 
 export default class Coldwarm {
@@ -13,6 +14,7 @@ export default class Coldwarm {
   constructor() {
     this._backend = new Backend(() => this.refreshColor());
     this._grid = new ColorGrid('#coldwarm-left-panel', color => this.backend.setForegroundColor(color));
+    this._column = new ColorColumn('#coldwarm-right-panel', color => this.backend.setForegroundColor(color));
 
     this.backend
         .register()
@@ -29,9 +31,15 @@ export default class Coldwarm {
     return this._grid;
   }
 
+  get column() {
+    return this._column;
+  }
+
   async refreshColor() {
     try {
-      this.grid.color = await this.backend.getForegroundColor();
+      const newColor = await this.backend.getForegroundColor();
+      this.grid.color = newColor;
+      this.column.color = newColor;
     } catch (err) {
       console.error('Error loading color: ');
       console.error(err);

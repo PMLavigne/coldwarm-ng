@@ -4,7 +4,7 @@ import { Settings } from './Settings';
 import ColorGridSquare from './ColorGridSquare';
 
 
-export class ColorGridRow {
+class ColorGridRow {
   constructor(x) {
     this.x = x;
     this.squares = [];
@@ -34,7 +34,7 @@ export class ColorGridRow {
 }
 
 
-export class ColorGrid {
+export default class ColorGrid {
   constructor(targetSelector, onSelectCallback) {
     this._color = null;
     this._onSelectCallback = onSelectCallback;
@@ -73,10 +73,10 @@ export class ColorGrid {
     this.$el.empty();
     this._gridRows = [];
 
-    for (let x = 0; x < this._gridSize; ++x) {
-      const row = new ColorGridRow(x);
-      for (let y = 0; y < this._gridSize; ++y) {
-        row.addSquare(new ColorGridSquare(x, y, () => this.getColorFor(x, y), this._onSelectCallback));
+    for (let y = 0; y < this._gridSize; ++y) {
+      const row = new ColorGridRow(y);
+      for (let x = 0; x < this._gridSize; ++x) {
+        row.addSquare(new ColorGridSquare(x, y, this.getColorFor.bind(this), this._onSelectCallback));
       }
       this._gridRows.push(row);
       this.$el.append(row.render());
@@ -93,10 +93,10 @@ export class ColorGrid {
     const tempStep = Settings.get('temperatureStep');
     const lumaStep = Settings.get('luminanceStep');
     const relativeX = x - halfGridSize;
-    const relativeY = y - halfGridSize;
+    const relativeY = halfGridSize - y;
 
-    curColor.addToRGB(relativeY * lumaStep);
     curColor.adjustWarmth(relativeX * tempStep);
+    curColor.addToRGB(relativeY * lumaStep);
 
     return curColor;
   }
