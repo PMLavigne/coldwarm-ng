@@ -14,40 +14,61 @@
   <div class="coldwarm-config-panel active" id="coldwarm-settings-panel">
     <section class="coldwarm-config hostBgd">
       <header class="coldwarm-config-header">
-        <h1>Configuration</h1>
-        <div class="coldwarm-config-close-container">
+        <div class="coldwarm-config-header-title"><h1>Configuration</h1></div>
+        <div class="coldwarm-config-header-close">
           <button id="closeBttn">Close</button>
         </div>
       </header>
       <section class="coldwarm-config-body">
-        <div class="coldwarm-config-switch">
-          <label class="switch-label">Show saturation</label>
-          <label class="topcoat-switch">
-            <input id="showSaturationControl" type="checkbox" class="topcoat-switch__input">
-            <div class="topcoat-switch__toggle"></div>
-          </label>
+        <div class="coldwarm-config-option coldwarm-config-switch">
+          <div class="coldwarm-config-label-wrapper">
+            <label class="coldwarm-config-label">Show saturation</label>
+          </div>
+          <div class="coldwarm-config-control">
+            <label class="topcoat-switch">
+              <input id="showSaturationControl" type="checkbox" class="topcoat-switch__input">
+              <div class="topcoat-switch__toggle"></div>
+            </label>
+          </div>
         </div>
 
-        <div class="coldwarm-config-number">
-          <label for="gridSizeControl">Grid Size</label>
-          <input type="number"  id="gridSizeControl" />
-        </div>
-        <div class="coldwarm-config-range">
-          <label for="temperatureStepControl">Temperature Step</label>
-          <input type="range" class="topcoat-range-input" id="temperatureStepControl" />
-        </div>
-
-        <div class="coldwarm-config-range">
-          <label for="luminanceStepControl">Luminance Step</label>
-          <input type="range" class="topcoat-range-input" id="luminanceStepControl" />
+        <div class="coldwarm-config-option coldwarm-config-number">
+          <div class="coldwarm-config-label-wrapper">
+            <label for="gridSizeControl" class="coldwarm-config-label">Grid Size</label>
+          </div>
+          <div class="coldwarm-config-control">
+            <input type="number"  id="gridSizeControl" class="topcoat-text-input" />
+          </div>
         </div>
 
-        <div class="coldwarm-config-range">
-          <label for="saturationStepControl">Saturation Step</label>
-          <input type="range" class="topcoat-range-input" id="saturationStepControl" />
+        <div class="coldwarm-config-option coldwarm-config-range">
+          <div class="coldwarm-config-label-wrapper">
+            <label for="temperatureStepControl" class="coldwarm-config-label">Temperature Step</label>
+          </div>
+          <div class="coldwarm-config-control">
+            <input type="range" class="topcoat-range-input" id="temperatureStepControl" />
+          </div>
         </div>
 
-        <div class="coldwarm-config-button">
+        <div class="coldwarm-config-option coldwarm-config-range">
+          <div class="coldwarm-config-label-wrapper">
+            <label for="luminanceStepControl" class="coldwarm-config-label">Luminance Step</label>
+          </div>
+          <div class="coldwarm-config-control">
+            <input type="range" class="topcoat-range-input" id="luminanceStepControl" />
+          </div>
+        </div>
+
+        <div class="coldwarm-config-option coldwarm-config-range">
+          <div class="coldwarm-config-label-wrapper">
+            <label for="saturationStepControl" class="coldwarm-config-label">Saturation Step</label>
+          </div>
+          <div class="coldwarm-config-control">
+            <input type="range" class="topcoat-range-input" id="saturationStepControl" />
+          </div>
+        </div>
+
+        <div class="coldwarm-config-option coldwarm-config-defaults">
           <button id="resetDefaults">Defaults</button>
         </div>
       </section>

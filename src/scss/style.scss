@@ -78,26 +78,51 @@ body {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    height: 100%;
+    justify-content: flex-start;
     padding: 5px;
     width: 100%;
   }
 
   .coldwarm-config-header {
+    align-content: center;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: center;
     margin-bottom: 10px;
     text-align: center;
 
+    .coldwarm-config-header-title {
+      flex: 1 0 auto;
+    }
+
+    .coldwarm-config-header-close {
+      flex: 0 0 auto;
+    }
+
     h1 {
+      display: inline-block;
       font-size: 1.2rem;
       margin: 0;
       padding: 0;
     }
+
+    .coldwarm-config-header-close {
+      display: inline-block;
+      font-size: 10px;
+      position: relative;
+      right: 0;
+    }
   }
 
   .coldwarm-config-body {
+    background-color: $background-alpha-dark;
     display: flex;
     flex-direction: column;
     justify-content: left;
+    overflow: auto;
+    padding: 5px;
   }
 
   .topcoat-switch {
@@ -107,5 +132,36 @@ body {
 
   label {
     font-size: 12px;
+  }
+
+  .coldwarm-config-option {
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: row;
+    padding-bottom: 3px;
+    padding-top: 3px;
+
+    &:nth-child(even) {
+      background-color: $background-alpha-darker;
+    }
+  }
+
+  .coldwarm-config-label-wrapper {
+    flex: 1 0 50%;
+    padding-left: 5px;
+    vertical-align: middle;
+  }
+
+
+  .coldwarm-config-control {
+    flex: 0 0 140px;
+    text-align: center;
+    vertical-align: center;
+  }
+
+  .coldwarm-config-defaults {
+    font-size: 12px;
+    justify-content: flex-end;
   }
 }
