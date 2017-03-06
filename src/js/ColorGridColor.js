@@ -45,7 +45,7 @@ export default class ColorGridColor {
 
   /**
    * Adjust saturation
-   * @param {number} factor factor to adjust saturation by, in the range [-1, 1]
+   * @param {number} factor factor to adjust saturation by, in the range [-100, 100]
    */
   adjustSaturation(factor) {
     if (factor === 0 || this.isGray) {
