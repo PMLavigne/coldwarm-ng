@@ -128,7 +128,7 @@ body {
   }
 
   .coldwarm-config-number input {
-    width: 2rem;
+    width: 3.5rem;
   }
 
   .coldwarm-config-option {
@@ -145,10 +145,17 @@ body {
   }
 
   .coldwarm-config-label-wrapper {
+    display: flex;
     flex: 1 0 50%;
-    font-size: 12px;
+    flex-direction: column;
+    justify-content: center;
     padding-left: 5px;
-    vertical-align: middle;
+
+    label {
+      display: inline-block;
+      font-size: 0.75rem;
+      line-height: 0.75rem;
+    }
   }
 
   .coldwarm-switch-wrapper {
@@ -163,7 +170,6 @@ body {
     flex: 0 0 140px;
     flex-direction: row;
     justify-content: center;
-    text-align: center;
   }
 
   .coldwarm-config-defaults {
@@ -175,12 +181,13 @@ body {
 // Topcoat Tweaks
 
 .topcoat-switch {
-  background-color: $background-alpha-dark;
+  // background-color: $background-alpha-dark;
   border-color: $background-alpha-darkest;
 }
 
 .topcoat-switch__toggle::before,
 .topcoat-switch__toggle::after {
+  background-color: $background-alpha-darker;
   text-shadow: $impact-shadow-offset $impact-shadow-offset $impact-shadow-blur $impact-shadow-color,
                (-$impact-shadow-offset) $impact-shadow-offset $impact-shadow-blur $impact-shadow-color,
                $impact-shadow-offset (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color,
@@ -193,6 +200,12 @@ body {
 }
 
 .topcoat-switch__toggle::after {
-  color: $background-alpha-lighter;
+  color: $background-alpha-lightest;
   z-index: 2;
+}
+
+.topcoat-text-input {
+  background-color: $background-alpha-darker;
+  color: $background-alpha-lightest;
+  text-align: center;
 }

@@ -4,10 +4,10 @@ export const KEY_PREFIX = 'codes.patrick.coldwarm-ng.';
 
 export const SettingDefaults = {
   gridSize: 5,
-  temperatureStep: 12,
-  luminanceStep: 12,
+  temperatureStep: 10,
+  luminanceStep: 10,
   showSaturation: true,
-  saturationMaxStep: 1
+  saturationMaxStep: 10
 };
 
 export class Setting {

@@ -52,9 +52,9 @@ export default class ColorGridColor {
       if (this.isMaxSaturated) {
         return;
       }
-      this.color.saturate(factor * 100);
+      this.color.saturate(factor);
     } else {
-      this.color.desaturate(Math.abs(factor * 100));
+      this.color.desaturate(Math.abs(factor));
     }
 
     /*
