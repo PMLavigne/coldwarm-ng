@@ -69,11 +69,20 @@ var themeManager = (function () {
         var bgdColor = toHex(panelBgColor);
 
         var eltBgdColor =  toHex(panelBgColor, 20);
-
+        var themeElement = document.getElementById('theme');
         var fontColor = "F0F0F0";
+        var bodyClass = document.createAttribute('class');
         if (panelBgColor.red > 122) {
             fontColor = "000000";
+            themeElement.href = 'lib/css/light.css';
+            bodyClass.value = 'light-theme'
+        } else {
+            themeElement.href = 'lib/css/dark.css';
+            bodyClass.value = 'dark-theme';
         }
+
+        document.getElementsByTagName('body')[0].setAttributeNode(bodyClass);
+
         var borderColor = toHex(panelBgColor, -100);
 
         var styleId = "hostStyle";

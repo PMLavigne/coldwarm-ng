@@ -9,7 +9,8 @@ $background-alpha-shade: rgba(0, 0, 0, 0.85);
 
 $impact-shadow-offset: 1px;
 $impact-shadow-blur: 2px;
-$impact-shadow-color: $background-alpha-darker;
+$impact-shadow-color-light: $background-alpha-dark;
+$impact-shadow-color-dark: $background-alpha-darker;
 
 
 body {
@@ -187,25 +188,46 @@ body {
 
 .topcoat-switch__toggle::before,
 .topcoat-switch__toggle::after {
-  background-color: $background-alpha-darker;
-  text-shadow: $impact-shadow-offset $impact-shadow-offset $impact-shadow-blur $impact-shadow-color,
-               (-$impact-shadow-offset) $impact-shadow-offset $impact-shadow-blur $impact-shadow-color,
-               $impact-shadow-offset (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color,
-               (-$impact-shadow-offset) (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color;
-}
-
-.topcoat-switch__toggle::before {
-  color: $background-alpha-lightest;
   z-index: 2;
 }
 
-.topcoat-switch__toggle::after {
-  color: $background-alpha-lightest;
-  z-index: 2;
-}
 
 .topcoat-text-input {
-  background-color: $background-alpha-darker;
-  color: $background-alpha-lightest;
   text-align: center;
+}
+
+// Light / Dark theme changes
+
+.light-theme {
+  .coldwarm-config-body {
+    background-color: inherit;
+  }
+
+  .coldwarm-config-option:nth-child(even) {
+    background-color: $background-alpha-dark;
+  }
+
+  .coldwarm-config-number input {
+    background-color: $background-alpha-lighter;
+    color: inherit;
+  }
+}
+
+.dark-theme {
+  .coldwarm-config-number input {
+    color: $background-alpha-lightest;
+    text-shadow: $impact-shadow-offset $impact-shadow-offset $impact-shadow-blur $impact-shadow-color-dark,
+                 (-$impact-shadow-offset) $impact-shadow-offset $impact-shadow-blur $impact-shadow-color-dark,
+                 $impact-shadow-offset (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color-dark,
+                 (-$impact-shadow-offset) (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color-dark;
+  }
+
+  .topcoat-switch__toggle::before,
+  .topcoat-switch__toggle::after {
+    color: $background-alpha-lightest;
+    text-shadow: $impact-shadow-offset $impact-shadow-offset $impact-shadow-blur $impact-shadow-color-dark,
+                 (-$impact-shadow-offset) $impact-shadow-offset $impact-shadow-blur $impact-shadow-color-dark,
+                 $impact-shadow-offset (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color-dark,
+                 (-$impact-shadow-offset) (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color-dark;
+  }
 }
