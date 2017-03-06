@@ -35,6 +35,10 @@ export default class ColorGridColor {
     return this.color.toHslString();
   }
 
+  toString() {
+    return `${this.color.toHslString()} | ${this.color.toRgbString()}`;
+  }
+
   copy() {
     return new ColorGridColor(this.color === null ? null : this.color.clone());
   }

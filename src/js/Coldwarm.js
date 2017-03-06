@@ -1,10 +1,11 @@
-
+import $ from 'jquery';
 import themeManager from 'thememanager';
 import Backend from './Backend';
 import ColorGrid from './ColorGrid';
 import ColorColumn from './ColorColumn';
 import { Settings } from './Settings';
 import SettingsPanel from './SettingsPanel';
+import ContextMenu from './ContextMenu';
 
 
 export default class Coldwarm {
@@ -19,6 +20,7 @@ export default class Coldwarm {
     this._grid = new ColorGrid('#coldwarm-left-panel', color => this.backend.setForegroundColor(color));
     this._column = new ColorColumn('#coldwarm-right-panel', color => this.backend.setForegroundColor(color));
     this._settingsPanel = new SettingsPanel('#coldwarm-settings-panel');
+    this.bindEvents();
     this.settingsPanel.init();
     this.backend
         .register()
@@ -43,6 +45,14 @@ export default class Coldwarm {
     return this._settingsPanel;
   }
 
+  get contextMenuEntries() {
+    return [{
+      name: 'Settings',
+      id: 'settings',
+      action: () => this.settingsPanel.show()
+    }];
+  }
+
   async refreshColor() {
     try {
       const newColor = await this.backend.getForegroundColor();
@@ -64,6 +74,13 @@ export default class Coldwarm {
     console.log('onSettingChange');
     this.redraw()
         .catch(err => console.error('Error reloading Coldwarm: ', err));
+  }
+
+  bindEvents() {
+    $('.coldwarm-body').on('contextmenu', (e) => {
+      ContextMenu.open(e, this.contextMenuEntries);
+      return false;
+    });
   }
 
 }

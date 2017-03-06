@@ -180,6 +180,50 @@ body {
   }
 }
 
+.coldwarm-context-menu-wrapper {
+  background-color: $background-alpha-darker;
+  bottom: 0;
+  box-sizing: border-box;
+  display: inline-block;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.coldwarm-context-menu {
+  border: 2px solid $background-alpha-darkest;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 0.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  transition: all 0.25s;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.coldwarm-context-menu-entry {
+  background-color: transparent;
+  border-bottom: 2px solid $background-alpha-darkest;
+  padding: 5px 10px;
+  transition: all 0.25s;
+
+  &:hover {
+    background-color: $background-alpha-lighter;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
 // Topcoat Tweaks
 
 .topcoat-switch {
