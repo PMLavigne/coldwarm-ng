@@ -14,3 +14,7 @@ linters:
     enabled: false
   PropertySortOrder:
     enabled: true
+  SelectorFormat:
+    enabled: true
+    ignored_names:
+      - topcoat-switch__toggle

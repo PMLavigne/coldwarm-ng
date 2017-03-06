@@ -92,15 +92,15 @@ export default class Backend {
     return this._appVersion;
   }
 
-  async getForegroundColor() {
+  getForegroundColor() {
     return this.getColor('foreground');
   }
 
-  async getBackgroundColor() {
+  getBackgroundColor() {
     return this.getColor('background');
   }
 
-  async getColor(type = 'foreground') {
+  getColor(type = 'foreground') {
     return new Promise((resolve, reject) => {
       this.csInterface.evalScript(`getColor('${type}');`, (color) => {
         if (!color) {
@@ -112,29 +112,29 @@ export default class Backend {
           return;
         }
         const parsed = JSON.parse(color);
-        resolve(new ColorGridColor(parsed.red, parsed.green, parsed.blue, parsed.alpha));
+        resolve(new ColorGridColor({ r: parsed.red, g: parsed.green, b: parsed.blue, a: parsed.alpha }));
       });
     });
   }
 
-  async setForegroundColor(color) {
+  setForegroundColor(color) {
     return this.setColor('foreground', color);
   }
 
-  async setBackgroundColor(color) {
+  setBackgroundColor(color) {
     return this.setColor('background', color);
   }
 
-  async setColor(type = 'foreground', color = null) {
+  setColor(type = 'foreground', color = null) {
     return new Promise((resolve) => {
       const toSet = color || this.grid.color;
-      this.csInterface.evalScript(`setColor('${type}', ${toSet.roundedRGBA.join(', ')});`, () => {
+      this.csInterface.evalScript(`setColor('${type}', ${JSON.stringify(toSet.color.toRGB())})`, () => {
         resolve();
       });
     });
   }
 
-  async convertTypeId(id) {
+  convertTypeId(id) {
     return new Promise((resolve) => {
       if (this._typeIdCache[id]) {
         resolve(this._typeIdCache[id]);
@@ -148,7 +148,7 @@ export default class Backend {
     });
   }
 
-  async convertStringId(id) {
+  convertStringId(id) {
     return new Promise((resolve) => {
       if (this._stringIdCache[id]) {
         resolve(this._stringIdCache[id]);

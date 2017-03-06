@@ -1,135 +1,64 @@
+import tinycolor from 'tinycolor2';
+
 export default class ColorGridColor {
-  constructor(r, g, b, a) {
-    this._r = r;
-    this._g = g;
-    this._b = b;
-    this._a = a;
-  }
-
-  get red() {
-    return this.r;
-  }
-
-  get r() {
-    return this._r;
-  }
-
-  set red(red) {
-    this.r = red;
-  }
-
-  set r(r) {
-    this._r = Math.min(Math.max(r, 0), 255);
-  }
-
-  get green() {
-    return this.g;
-  }
-
-  get g() {
-    return this._g;
-  }
-
-  set green(green) {
-    this.g = green;
-  }
-
-  set g(g) {
-    this._g = Math.min(Math.max(g, 0), 255);
-  }
-
-  get blue() {
-    return this.b;
-  }
-
-  get b() {
-    return this._b;
-  }
-
-  set blue(blue) {
-    this.b = blue;
-  }
-
-  set b(b) {
-    this._b = Math.min(Math.max(b, 0), 255);
-  }
-
-  get alpha() {
-    return this.a;
-  }
-
-  get a() {
-    return this._a;
-  }
-
   /**
-   * Convert the internal 8-bit alpha integer (0-255) to a CSS-recognized 0-1 floating point decimal
-   * @returns {number} alpha as a floating point number in the range [0, 1]
+   * Create the ColorGridColor
+   * @param colorObject either a tinycolor object or an object that can be given to tinycolor
    */
-  get cssAlpha() {
-    return (this.a === null) ? 1 : Math.min(1, Math.max(0, (this.a || 255) / 255));
+  constructor(colorObject) {
+    this.color = colorObject;
   }
 
-  set alpha(alpha) {
-    this.a = alpha;
+  get color() {
+    return this._color;
   }
 
-  set a(a) {
-    if (a === null) {
-      this._a = null;
-      return;
+  set color(colorObject) {
+    if (colorObject === null || colorObject === undefined) {
+      this._color = null;
+    } else if (colorObject.getFormat) { // Check for tinycolor method
+      this._color = colorObject;
+    } else {
+      this._color = tinycolor(colorObject);
     }
-    this._a = Math.min(Math.max(a, 0), 255);
-  }
-
-  get roundedRGBA() {
-    return [
-      Math.min(255, Math.round(this.r)),
-      Math.min(255, Math.round(this.g)),
-      Math.min(255, Math.round(this.b)),
-      this.a === null ? null : Math.min(255, Math.round(this.a))
-    ];
-  }
-
-  get roundedCSSRGBA() {
-    return [
-      Math.min(255, Math.round(this.r)),
-      Math.min(255, Math.round(this.g)),
-      Math.min(255, Math.round(this.b)),
-      this.cssAlpha
-    ];
   }
 
   get isGray() {
-    return this.r === this.b && this.r === this.g;
+    return this.color.toHsl().s === 0;
   }
 
   get isMaxSaturated() {
-    return this.r === 0 || this.b === 0 || this.g === 0;
+    return this.color.toHsl().s === 1;
   }
 
   get asCSS() {
-    return `rgba(${this.roundedCSSRGBA.join(', ')})`;
+    return this.color.toHslString();
   }
 
   copy() {
-    return new ColorGridColor(this.r, this.g, this.b, this.a);
+    return new ColorGridColor(this.color === null ? null : this.color.clone());
   }
 
   /**
-   * Adjust saturation, attempting to be similar to Photoshop's Ctrl+U action
-   * Algorithm taken from original ColdWarm implementation and modified to work here.
+   * Adjust saturation
    * @param {number} factor factor to adjust saturation by, in the range [-1, 1]
    */
   adjustSaturation(factor) {
-    if (this.isGray) {
+    if (factor === 0 || this.isGray) {
       return;
     }
 
-    if (factor > 0 && this.isMaxSaturated) {
-      return;
+    if (factor > 0) {
+      if (this.isMaxSaturated) {
+        return;
+      }
+      this.color.saturate(factor * 100);
+    } else {
+      this.color.desaturate(Math.abs(factor * 100));
     }
 
+    /*
+     * Algorithm taken from original ColdWarm implementation
     const factorBound = Math.max(-1, Math.min(1, Number(factor)));
 
     const sorted = [
@@ -150,7 +79,7 @@ export default class ColorGridColor {
       this.r += (this.r - gray) * factorBound;
       this.g += (this.g - gray) * factorBound;
       this.b += (this.b - gray) * factorBound;
-    }
+    }*/
   }
 
   /**
@@ -159,31 +88,28 @@ export default class ColorGridColor {
    * @param {number} factor factor to adjust the warmth by
    */
   adjustWarmth(factor) {
-    const brightness = this.luminance;
+    const luminance = this.color.getLuminance();
 
-    this.r += factor;
-    this.b -= factor;
+    const rgbColor = this.color.toRgb();
 
-    this.addToRGB((brightness - this.luminance) * 2);
+    rgbColor.r += factor;
+    rgbColor.b -= factor;
+
+    this.color = tinycolor(rgbColor);
+
+    this.adjustBrightness((luminance - this.color.getLuminance()) * 2);
   }
 
-  /**
-   * Add amount to r, g, b channels
-   * @param {number} amount absolute value to add to r, g, b channels
-   */
-  addToRGB(amount) {
-    this.r += amount;
-    this.g += amount;
-    this.b += amount;
+  adjustBrightness(factor) {
+    if (factor === 0) {
+      return;
+    }
+
+    if (factor > 0) {
+      this.color.brighten(factor);
+    } else {
+      this.color.darken(Math.abs(factor));
+    }
   }
 
-  /**
-   * Relative luminance of the color
-   * @see https://en.wikipedia.org/wiki/Relative_luminance
-   *
-   * @returns {number} relative luminance of this color
-   */
-  get luminance() {
-    return (0.2126 * this.r) + (0.7152 * this.g) + (0.0722 * this.b);
-  }
 }

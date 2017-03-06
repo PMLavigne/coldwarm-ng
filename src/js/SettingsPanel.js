@@ -31,6 +31,7 @@ export default class SettingsPanel {
   load() {
     this.$gridSizeControl.val(Settings.get('gridSize'));
     this.$saturationControl.prop('checked', Settings.get('showSaturation') ? 'checked' : '');
+    this.show();
   }
 
   show() {

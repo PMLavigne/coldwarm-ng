@@ -11,7 +11,7 @@
     <section class="coldwarm-left-panel" id="coldwarm-left-panel">&nbsp;</section>
     <section class="coldwarm-right-panel" id="coldwarm-right-panel">&nbsp;</section>
   </section>
-  <div class="coldwarm-config-panel active" id="coldwarm-settings-panel">
+  <div class="coldwarm-config-panel" id="coldwarm-settings-panel">
     <section class="coldwarm-config hostBgd">
       <header class="coldwarm-config-header">
         <div class="coldwarm-config-header-title"><h1>Configuration</h1></div>
@@ -25,10 +25,12 @@
             <label class="coldwarm-config-label">Show saturation</label>
           </div>
           <div class="coldwarm-config-control">
-            <label class="topcoat-switch">
-              <input id="showSaturationControl" type="checkbox" class="topcoat-switch__input">
-              <div class="topcoat-switch__toggle"></div>
-            </label>
+            <div class="coldwarm-switch-wrapper">
+              <label class="topcoat-switch">
+                <input id="showSaturationControl" type="checkbox" class="topcoat-switch__input">
+                <div class="topcoat-switch__toggle"></div>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -59,14 +61,14 @@
           </div>
         </div>
 
-        <div class="coldwarm-config-option coldwarm-config-range">
+        <div0 class="coldwarm-config-option coldwarm-config-range">
           <div class="coldwarm-config-label-wrapper">
             <label for="saturationStepControl" class="coldwarm-config-label">Saturation Step</label>
           </div>
           <div class="coldwarm-config-control">
             <input type="range" class="topcoat-range-input" id="saturationStepControl" />
           </div>
-        </div>
+        </div0>
 
         <div class="coldwarm-config-option coldwarm-config-defaults">
           <button id="resetDefaults">Defaults</button>

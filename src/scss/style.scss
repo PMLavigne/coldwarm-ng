@@ -1,10 +1,15 @@
 
+$background-alpha-lightest: rgba(255, 255, 255, 0.50);
 $background-alpha-lighter: rgba(255, 255, 255, 0.25);
 $background-alpha-light: rgba(255, 255, 255, 0.1);
 $background-alpha-dark: rgba(0, 0, 0, 0.1);
 $background-alpha-darker: rgba(0, 0, 0, 0.25);
 $background-alpha-darkest: rgba(0, 0, 0, 0.50);
 $background-alpha-shade: rgba(0, 0, 0, 0.85);
+
+$impact-shadow-offset: 1px;
+$impact-shadow-blur: 2px;
+$impact-shadow-color: $background-alpha-darker;
 
 
 body {
@@ -98,7 +103,11 @@ body {
     }
 
     .coldwarm-config-header-close {
+      display: inline-block;
       flex: 0 0 auto;
+      font-size: 10px;
+      position: relative;
+      right: 0;
     }
 
     h1 {
@@ -106,13 +115,6 @@ body {
       font-size: 1.2rem;
       margin: 0;
       padding: 0;
-    }
-
-    .coldwarm-config-header-close {
-      display: inline-block;
-      font-size: 10px;
-      position: relative;
-      right: 0;
     }
   }
 
@@ -125,13 +127,8 @@ body {
     padding: 5px;
   }
 
-  .topcoat-switch {
-    background-color: $background-alpha-dark;
-    border-color: $background-alpha-darkest;
-  }
-
-  label {
-    font-size: 12px;
+  .coldwarm-config-number input {
+    width: 2rem;
   }
 
   .coldwarm-config-option {
@@ -149,19 +146,53 @@ body {
 
   .coldwarm-config-label-wrapper {
     flex: 1 0 50%;
+    font-size: 12px;
     padding-left: 5px;
     vertical-align: middle;
   }
 
+  .coldwarm-switch-wrapper {
+    display: inline-block;
+    flex: 1 1 auto;
+  }
+
 
   .coldwarm-config-control {
+    align-content: center;
+    display: flex;
     flex: 0 0 140px;
+    flex-direction: row;
+    justify-content: center;
     text-align: center;
-    vertical-align: center;
   }
 
   .coldwarm-config-defaults {
     font-size: 12px;
     justify-content: flex-end;
   }
+}
+
+// Topcoat Tweaks
+
+.topcoat-switch {
+  background-color: $background-alpha-dark;
+  border-color: $background-alpha-darkest;
+}
+
+.topcoat-switch__toggle::before,
+.topcoat-switch__toggle::after {
+  text-shadow: $impact-shadow-offset $impact-shadow-offset $impact-shadow-blur $impact-shadow-color,
+               (-$impact-shadow-offset) $impact-shadow-offset $impact-shadow-blur $impact-shadow-color,
+               $impact-shadow-offset (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color,
+               (-$impact-shadow-offset) (-$impact-shadow-offset) $impact-shadow-blur $impact-shadow-color;
+}
+
+.topcoat-switch__toggle::before {
+  color: $background-alpha-lightest;
+  z-index: 2;
+}
+
+.topcoat-switch__toggle::after {
+  color: $background-alpha-lighter;
+  z-index: 2;
 }

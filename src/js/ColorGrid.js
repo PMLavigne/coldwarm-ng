@@ -96,7 +96,7 @@ export default class ColorGrid {
     const relativeY = halfGridSize - y;
 
     curColor.adjustWarmth(relativeX * tempStep);
-    curColor.addToRGB(relativeY * lumaStep);
+    curColor.adjustBrightness(relativeY * lumaStep);
 
     return curColor;
   }
