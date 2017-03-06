@@ -14,11 +14,6 @@ export default class ColorColumn {
     if (!this.$el || !this.$el.length) {
       throw new Error(`Color column target ${targetSelector} does not exist`);
     }
-
-    if (this._size % 2 === 0) {
-      console.log(`WARNING: ColorColumn.size must be odd, adding 1 to ${this._size}`);
-      this._size++;
-    }
   }
 
   get size() {
@@ -38,17 +33,37 @@ export default class ColorColumn {
     this.refresh();
   }
 
+  show() {
+    this.$el.addClass('active');
+  }
+
+  hide() {
+    this.$el.removeClass('active');
+  }
+
   refresh() {
     if (!this.squares.length) {
       this.render();
     } else {
       this.squares.forEach(square => square.refresh());
     }
+
+    if (Settings.get('showSaturation')) {
+      this.show();
+    } else {
+      this.hide();
+    }
   }
 
   render() {
     this.$el.empty();
     this._squares = [];
+
+    this._size = Number(Settings.get('gridSize'));
+    if (this.size % 2 === 0) {
+      console.log(`WARNING: ColorColumn.size must be odd, adding 1 to ${this.size}`);
+      this._size++;
+    }
 
     for (let y = 0; y < this.size; ++y) {
       const square = new ColorGridSquare(0, y, this.getColorFor.bind(this), this._onSelectCallback);
@@ -64,11 +79,10 @@ export default class ColorColumn {
     }
 
     const curColor = this.color.copy();
-    const saturationMaxStep = Settings.get('saturationMaxStep');
+    const saturationStep = Settings.get('saturationStep');
     const relativePos = halfSize - pos;
-    const saturationStep = (saturationMaxStep / halfSize) * relativePos;
 
-    curColor.adjustSaturation(saturationStep);
+    curColor.adjustSaturation(saturationStep * relativePos);
 
     return curColor;
   }

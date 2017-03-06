@@ -45,11 +45,10 @@ export default class ColorGrid {
     if (!this.$el || !this.$el.length) {
       throw new Error(`Color grid target ${targetSelector} does not exist`);
     }
+  }
 
-    if (this._gridSize % 2 === 0) {
-      console.log(`WARNING: ColorGrid.gridSize must be odd, adding 1 to ${this._gridSize}`);
-      this._gridSize++;
-    }
+  get gridSize() {
+    return this._gridSize;
   }
 
   get color() {
@@ -72,10 +71,16 @@ export default class ColorGrid {
   renderGrid() {
     this.$el.empty();
     this._gridRows = [];
+    this._gridSize = Number(Settings.get('gridSize'));
+    if (this.gridSize % 2 === 0) {
+      console.log(`WARNING: ColorGrid.gridSize must be odd, adding 1 to ${this.gridSize}`);
+      this._gridSize++;
+    }
 
-    for (let y = 0; y < this._gridSize; ++y) {
+
+    for (let y = 0; y < this.gridSize; ++y) {
       const row = new ColorGridRow(y);
-      for (let x = 0; x < this._gridSize; ++x) {
+      for (let x = 0; x < this.gridSize; ++x) {
         row.addSquare(new ColorGridSquare(x, y, this.getColorFor.bind(this), this._onSelectCallback));
       }
       this._gridRows.push(row);
@@ -84,7 +89,7 @@ export default class ColorGrid {
   }
 
   getColorFor(x, y) {
-    const halfGridSize = (this._gridSize - 1) / 2;
+    const halfGridSize = (this.gridSize - 1) / 2;
     if (x === halfGridSize && y === halfGridSize) {
       return this.color;
     }

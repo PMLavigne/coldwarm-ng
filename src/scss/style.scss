@@ -32,11 +32,6 @@ body {
   width: 100%;
 }
 
-.coldwarm-left-panel,
-.coldwarm-right-panel {
-  display: flex;
-}
-
 .coldwarm-grid-cell {
   cursor: pointer;
   display: inline-block;
@@ -44,6 +39,7 @@ body {
 }
 
 .coldwarm-left-panel {
+  display: flex;
   flex: 1 0 auto;
   flex-direction: column;
 
@@ -55,9 +51,14 @@ body {
 }
 
 .coldwarm-right-panel {
-  flex: 0 1 15%;
+  display: none;
+  flex: 0 1 10%;
   flex-direction: column;
   margin-left: 5px;
+
+  &.active {
+    display: flex;
+  }
 }
 
 .coldwarm-config-panel {

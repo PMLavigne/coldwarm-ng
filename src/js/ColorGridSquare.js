@@ -17,7 +17,6 @@ export default class ColorGridSquare {
     this.$el = $('<div />').attr('class', 'coldwarm-grid-cell')
                            .attr('id', `coldwarm-grid-cell-${this.x}-${this.y}`)
                            .css('background-color', this.color ? this.color.asCSS : 'transparent')
-                           .html('&nbsp;')
                            .on('click', this.onClick.bind(this));
     return this.$el;
   }

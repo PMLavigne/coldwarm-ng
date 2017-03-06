@@ -7,7 +7,7 @@ export const SettingDefaults = {
   temperatureStep: 10,
   luminanceStep: 10,
   showSaturation: true,
-  saturationMaxStep: 10
+  saturationStep: 10
 };
 
 export class Setting {

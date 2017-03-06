@@ -128,7 +128,7 @@ export default class Backend {
   setColor(type = 'foreground', color = null) {
     return new Promise((resolve) => {
       const toSet = color || this.grid.color;
-      this.csInterface.evalScript(`setColor('${type}', ${JSON.stringify(toSet.color.toRGB())})`, () => {
+      this.csInterface.evalScript(`setColor('${type}', ${JSON.stringify(toSet.color.toRgb())})`, () => {
         resolve();
       });
     });

@@ -61,6 +61,7 @@ export default class Coldwarm {
   }
 
   onSettingChange() {
+    console.log('onSettingChange');
     this.redraw()
         .catch(err => console.error('Error reloading Coldwarm: ', err));
   }

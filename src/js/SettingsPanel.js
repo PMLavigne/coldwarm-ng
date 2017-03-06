@@ -15,6 +15,9 @@ export default class SettingsPanel {
     this.$defaultBttn = this.$el.find('#resetDefaults');
     this.$saturationControl = this.$el.find('#showSaturationControl');
     this.$gridSizeControl = this.$el.find('#gridSizeControl');
+    this.$temperatureStepControl = this.$el.find('#temperatureStepControl');
+    this.$luminanceStepControl = this.$el.find('#luminanceStepControl');
+    this.$saturationStepControl = this.$el.find('#saturationStepControl');
 
     this.$closeBttn.on('click', () => this.hide());
     this.$defaultBttn.on('click', () => {
@@ -24,14 +27,18 @@ export default class SettingsPanel {
 
     this.$saturationControl.on('change', e => Settings.set('showSaturation', e.currentTarget.checked));
     this.$gridSizeControl.on('change', e => Settings.set('gridSize', $(e.currentTarget).val()));
-
+    this.$temperatureStepControl.on('change', e => Settings.set('temperatureStep', $(e.currentTarget).val()));
+    this.$luminanceStepControl.on('change', e => Settings.set('luminanceStep', $(e.currentTarget).val()));
+    this.$saturationStepControl.on('change', e => Settings.set('saturationStep', $(e.currentTarget).val()));
     this.load();
   }
 
   load() {
     this.$gridSizeControl.val(Settings.get('gridSize'));
     this.$saturationControl.prop('checked', Settings.get('showSaturation') ? 'checked' : '');
-    this.show();
+    this.$temperatureStepControl.val(Settings.get('temperatureStep'));
+    this.$luminanceStepControl.val(Settings.get('luminanceStep'));
+    this.$saturationStepControl.val(Settings.get('saturationStep'));
   }
 
   show() {
