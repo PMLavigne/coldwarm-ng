@@ -37,10 +37,10 @@ function getColor(type) {
   }
 
   return '{' +
-    '"red": ' + color.rgb.red + ',' +
-    '"blue": ' + color.rgb.blue + ',' +
-    '"green": ' + color.rgb.green + ',' +
-    '"alpha": ' + (color.rgb.alpha === undefined ? null : color.rgb.alpha) +
+    '"r": ' + color.rgb.red + ',' +
+    '"b": ' + color.rgb.blue + ',' +
+    '"g": ' + color.rgb.green + ',' +
+    '"a": ' + (color.rgb.alpha === undefined ? null : color.rgb.alpha) +
   '}';
 }
 

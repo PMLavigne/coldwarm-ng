@@ -5,7 +5,7 @@ declare type Version = {
   major: number;
   minor: number;
   micro: number;
-  special: string;
+  special?: string;
 }
 
 declare type RGBColor = {
@@ -50,7 +50,7 @@ declare type AppSkinInfo = {
 
 declare type HostEnvironment = {
   appName: string;
-  appVersion: Version;
+  appVersion: string;
   appLocale: string;
   appUILocale: string;
   appId: string;
@@ -113,7 +113,7 @@ declare class CSEvent {
   scope: 'GLOBAL' | 'APPLICATION';
   appId: string;
   extensionId: string;
-  data?: any;
+  data?: string;
 }
 
 declare class CSInterface {

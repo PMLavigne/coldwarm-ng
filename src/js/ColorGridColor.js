@@ -4,23 +4,34 @@ import tinycolor from 'tinycolor2';
 
 import { ColorInfo } from './ColorTypes';
 
+/**
+ * A modifiable, generic color object
+ */
 export default class ColorGridColor {
 
   _color: ?tinycolor;
 
   /**
-   * Create the ColorGridColor
-   * @param colorObject either a tinycolor object or an object that can be given to tinycolor
+   * Create the color object
+   * @param {?tinycolor | ColorInfo | string} colorObject either a tinycolor object or an object that can be given to tinycolor
    */
-  constructor(colorObject: tinycolor | ColorInfo | string) {
+  constructor(colorObject: ?tinycolor | ColorInfo | string) {
     this.color = colorObject;
   }
 
+  /**
+   * Get the internal representation of this color, as a tinycolor object
+   * @returns {?tinycolor} tinycolor representation of this color
+   */
   get color(): tinycolor {
     return this._color;
   }
 
-  set color(colorObject: tinycolor | ColorInfo | string) {
+  /**
+   * Set what color this object represents
+   * @param {?tinycolor | ColorInfo | string} colorObject object representing a color that can be parsed by tinycolor
+   */
+  set color(colorObject: ?tinycolor | ColorInfo | string) {
     if (colorObject === null || colorObject === undefined) {
       this._color = null;
     } else if (colorObject.getFormat) { // Check for tinycolor method
@@ -35,7 +46,7 @@ export default class ColorGridColor {
    * @returns {boolean} true if this color is a shade of gray
    */
   get isGray(): bool {
-    return this.color.toHsl().s === 0;
+    return !!this.color && this.color.toHsl().s === 0;
   }
 
   /**
@@ -43,23 +54,24 @@ export default class ColorGridColor {
    * @returns {boolean} true if this color is maximally saturated
    */
   get isMaxSaturated(): bool {
-    return this.color.toHsl().s === 1;
+    return !!this.color && this.color.toHsl().s === 1;
   }
 
   /**
    * Get a string representation of this color that can be used in a CSS rule
-   * @returns {string}
+   * @returns {?string} string representation of this color that can be used as a CSS rule, or null if this object's color
+   * is null
    */
-  get asCSS(): string {
-    return this.color.toHslString();
+  get asCSS(): ?string {
+    return this.color ? this.color.toHslString() : null;
   }
 
   /**
    * Get a readable string describing the color in HSL and RGB terms
-   * @returns {string} readable string describing this color
+   * @returns {string} readable string describing this color, or the string 'null' if this object's color is null
    */
   toString(): string {
-    return `${this.color.toHslString()} | ${this.color.toRgbString()}`;
+    return this.color ? `${this.color.toHslString()} | ${this.color.toRgbString()}` : 'null';
   }
 
   /**
@@ -67,7 +79,7 @@ export default class ColorGridColor {
    * @returns {ColorGridColor} a deep clone of this object
    */
   clone(): ColorGridColor {
-    return new ColorGridColor(this.color === null ? null : this.color.clone());
+    return new ColorGridColor(this.color ? null : this.color.clone());
   }
 
   /**
@@ -75,7 +87,7 @@ export default class ColorGridColor {
    * @param {number} factor factor to adjust saturation by, in the range [-100, 100]
    */
   adjustSaturation(factor: number): void {
-    if (factor === 0 || this.isGray) {
+    if (!this.color || factor === 0 || this.isGray) {
       return;
     }
 
@@ -95,6 +107,9 @@ export default class ColorGridColor {
    * @param {number} factor factor to adjust the warmth by
    */
   adjustWarmth(factor: number): void {
+    if (!this.color || factor === 0) {
+      return;
+    }
     const luminance = this.color.getLuminance();
 
     const rgbColor = this.color.toRgb();
@@ -112,7 +127,7 @@ export default class ColorGridColor {
    * @param {number} factor factor to adjust brightness by, in the range [-100, 100]
    */
   adjustBrightness(factor: number): void {
-    if (factor === 0) {
+    if (!this.color || factor === 0) {
       return;
     }
 

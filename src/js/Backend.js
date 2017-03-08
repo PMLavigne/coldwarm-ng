@@ -1,5 +1,7 @@
-import CSInterface from 'csinterface';
+// @flow
+
 import ColorGridColor from './ColorGridColor';
+import { RGBColorInfo } from './ColorTypes';
 
 const ColorChangeBindEvents = [
   'set ',
@@ -8,8 +10,14 @@ const ColorChangeBindEvents = [
   'Rset'
 ];
 
+
+export type PhotoshopColorType = 'foreground' | 'background';
+
 export default class Backend {
-  static getEventIdFromJsonEvent(eventString) {
+  static getEventIdFromJsonEvent(eventString: ?string): string {
+    if (!eventString) {
+      throw new Error('No data returned from photoshopCallback');
+    }
     const splitData = (eventString || '').replace(/ver[1],/, '');
 
     if (!splitData) {
@@ -25,7 +33,10 @@ export default class Backend {
     return parsedData.eventID;
   }
 
-  static getEventIdFromOldEvent(eventData) {
+  static getEventIdFromOldEvent(eventData: ?string): string {
+    if (!eventData) {
+      throw new Error('No data returned from photoshopCallback');
+    }
     const splitData = (eventData || '').split(',');
 
     if (!splitData) {
@@ -41,68 +52,76 @@ export default class Backend {
     return eventId;
   }
 
-  constructor(onColorChange = null) {
-    this._csInterface = new CSInterface();
-    this._appVersion = null;
-    this._stringIdCache = {};
-    this._typeIdCache = {};
+  _csInterface: CSInterface = new CSInterface();
+  _appVersion: Version;
+  _extensionId: string;
+  _stringIdCache: Map<string, number> = new Map();
+  _typeIdCache: Map<number, string> = new Map();
+
+  onColorChange: ?Function = null;
+
+  constructor(onColorChange?: Function) {
     this.onColorChange = onColorChange;
   }
 
-  get extensionId() {
+  get extensionId(): string {
     if (!this._extensionId) {
       this._extensionId = this.csInterface.getExtensionID();
     }
     return this._extensionId;
   }
 
-  get csInterface() {
+  get csInterface(): CSInterface {
     return this._csInterface;
   }
 
-  get appVersion() {
-    if (this._appVersion === null) {
-      const versionNumber = this.csInterface.getHostEnvironment().appVersion;
-      if (!versionNumber) {
-        this._appVersion = {
-          major: 0,
-          minor: 0,
-          patch: 0
-        };
-        console.error('Failed to get appVersion from host environment!');
-      } else {
-        const parsed = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?.*?$/.exec(versionNumber);
-        if (!parsed) {
-          this._appVersion = {
-            major: 0,
-            minor: 0,
-            patch: 0
-          };
-          console.error(`Failed to parse appVersion ${versionNumber}`);
-        } else {
-          this._appVersion = {
-            major: Number(parsed[1]),
-            minor: Number(parsed[2] || '0'),
-            patch: Number(parsed[3] || '0')
-          };
-        }
-      }
+  get appVersion(): Version {
+    if (this._appVersion) {
+      return this._appVersion;
     }
+
+    const versionNumber = this.csInterface.getHostEnvironment().appVersion;
+    if (!versionNumber) {
+      this._appVersion = {
+        major: 0,
+        minor: 0,
+        micro: 0
+      };
+      console.error('Failed to get appVersion from host environment!');
+      return this._appVersion;
+    }
+
+    const parsed = /^(\d+)(?:\.(\d+)(?:\.(\d+))?)?.*?$/.exec(versionNumber);
+    if (!parsed) {
+      this._appVersion = {
+        major: 0,
+        minor: 0,
+        micro: 0
+      };
+      console.error(`Failed to parse appVersion ${versionNumber}`);
+      return this._appVersion;
+    }
+
+    this._appVersion = {
+      major: Number(parsed[1]),
+      minor: Number(parsed[2] || '0'),
+      micro: Number(parsed[3] || '0')
+    };
 
     return this._appVersion;
   }
 
-  getForegroundColor() {
+  getForegroundColor(): Promise<ColorGridColor> {
     return this.getColor('foreground');
   }
 
-  getBackgroundColor() {
+  getBackgroundColor(): Promise<ColorGridColor> {
     return this.getColor('background');
   }
 
-  getColor(type = 'foreground') {
+  getColor(type: PhotoshopColorType = 'foreground'): Promise<ColorGridColor> {
     return new Promise((resolve, reject) => {
-      this.csInterface.evalScript(`getColor('${type}');`, (color) => {
+      this.csInterface.evalScript(`getColor('${type}');`, (color: string) => {
         if (!color) {
           reject('No color returned');
           return;
@@ -111,91 +130,94 @@ export default class Backend {
           reject('Unspecified error occurred');
           return;
         }
-        const parsed = JSON.parse(color);
-        resolve(new ColorGridColor({ r: parsed.red, g: parsed.green, b: parsed.blue, a: parsed.alpha }));
+        const parsed: RGBColorInfo = JSON.parse(color);
+        resolve(new ColorGridColor(parsed));
       });
     });
   }
 
-  setForegroundColor(color) {
+  setForegroundColor(color: ColorGridColor): Promise<void> {
     return this.setColor('foreground', color);
   }
 
-  setBackgroundColor(color) {
+  setBackgroundColor(color: ColorGridColor): Promise<void> {
     return this.setColor('background', color);
   }
 
-  setColor(type = 'foreground', color = null) {
+  setColor(type: PhotoshopColorType = 'foreground', color: ColorGridColor): Promise<void> {
     return new Promise((resolve) => {
-      const toSet = color || this.grid.color;
-      this.csInterface.evalScript(`setColor('${type}', ${JSON.stringify(toSet.color.toRgb())})`, () => {
-        resolve();
-      });
+      this.csInterface.evalScript(`setColor('${type}', ${JSON.stringify(color.color.toRgb())})`, () => resolve());
     });
   }
 
-  convertTypeId(id) {
+  convertTypeId(id: number | string): Promise<string> {
     return new Promise((resolve) => {
-      if (this._typeIdCache[id]) {
-        resolve(this._typeIdCache[id]);
+      const intId = parseInt(id, 10);
+
+      const cached = this._typeIdCache.get(intId);
+      if (cached !== null && cached !== undefined) {
+        resolve(cached);
         return;
       }
-      this.csInterface.evalScript(`app.typeIDToStringID(${Number(id)});`, (converted) => {
-        this._stringIdCache[converted] = id;
-        this._typeIdCache[id] = converted;
+      this.csInterface.evalScript(`app.typeIDToStringID(${intId});`, (converted: string) => {
+        this._stringIdCache.set(converted, intId);
+        this._typeIdCache.set(intId, converted);
         resolve(converted);
       });
     });
   }
 
-  convertStringId(id) {
-    return new Promise((resolve) => {
-      if (this._stringIdCache[id]) {
-        resolve(this._stringIdCache[id]);
+  convertStringId(id: string): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const cached = this._stringIdCache.get(id);
+      if (cached !== null && cached !== undefined) {
+        resolve(cached);
         return;
       }
-      this.csInterface.evalScript(`charIDToTypeID('${id}');`, (converted) => {
+      this.csInterface.evalScript(`charIDToTypeID('${id}');`, (converted: string) => {
         if (converted === 'EvalScript error.') {
           console.error(`WARN: Got ${converted} for ID ${id}`);
-          resolve(converted);
+          reject(converted);
           return;
         }
-        this._stringIdCache[id] = converted;
-        this._typeIdCache[converted] = id;
-        resolve(converted);
+        const numeric = parseInt(converted, 10);
+        this._stringIdCache.set(id, numeric);
+        this._typeIdCache.set(numeric, id);
+        resolve(numeric);
       });
     });
   }
 
-  photoshopCallback(e) {
+  photoshopCallback(e: CSEvent): void {
     this.processEvent(e)
         .catch((err) => {
           console.error('Error processing photoshop callback:', err);
         });
   }
 
-  async processEvent(e) {
+  async processEvent(e: CSEvent): Promise<void> {
     const eventID = this.appVersion.major >= 16 ? Backend.getEventIdFromJsonEvent(e.data) :
                                                   Backend.getEventIdFromOldEvent(e.data);
     const idString = await this.convertTypeId(eventID);
 
-    if (this.onColorChange) {
-      if (ColorChangeBindEvents.find(ev => idString.trim() === ev.trim())) {
-        this.onColorChange();
-      } else {
-        console.log(`Ignoring unexpected event: ${idString}`);
-      }
+    if (!ColorChangeBindEvents.find(ev => idString.trim() === ev.trim())) {
+      console.log(`Ignoring unexpected event: ${idString}`);
+      return;
+    }
+
+    if (this.onColorChange !== null && this.onColorChange !== undefined) {
+      this.onColorChange();
     }
   }
 
-  makePersistent(enable = true) {
+  makePersistent(enable: bool = true): void {
     const event = enable ? new CSEvent('com.adobe.PhotoshopPersistent', 'APPLICATION')
                          : new CSEvent('com.adobe.PhotoshopUnPersistent', 'APPLICATION');
     event.extensionId = this.extensionId;
     this.csInterface.dispatchEvent(event);
   }
 
-  async registerEvents(enable = true) {
+  async registerEvents(enable: bool = true): Promise<void> {
     const types = await Promise.all(ColorChangeBindEvents.map(async str => this.convertStringId(str)));
 
     types.forEach((curEvent) => {
@@ -210,7 +232,7 @@ export default class Backend {
     });
   }
 
-  registerCallback() {
+  registerCallback(): void {
     if (this.appVersion.major >= 16) {
       // New way, as of Photoshop 2015
       this.csInterface.addEventListener(`com.adobe.PhotoshopJSONCallback${this.extensionId}`,
@@ -221,13 +243,13 @@ export default class Backend {
     }
   }
 
-  async register() {
+  async register(): Promise<void> {
     this.makePersistent();
     this.registerCallback();
     await this.registerEvents();
   }
 
-  async unregister() {
+  async unregister(): Promise<void> {
     this.makePersistent(false);
     await this.registerEvents(false);
   }
