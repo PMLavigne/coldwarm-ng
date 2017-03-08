@@ -1,19 +1,26 @@
+// @flow
+
 import tinycolor from 'tinycolor2';
 
+import { ColorInfo } from './ColorTypes';
+
 export default class ColorGridColor {
+
+  _color: ?tinycolor;
+
   /**
    * Create the ColorGridColor
    * @param colorObject either a tinycolor object or an object that can be given to tinycolor
    */
-  constructor(colorObject) {
+  constructor(colorObject: tinycolor | ColorInfo | string) {
     this.color = colorObject;
   }
 
-  get color() {
+  get color(): tinycolor {
     return this._color;
   }
 
-  set color(colorObject) {
+  set color(colorObject: tinycolor | ColorInfo | string) {
     if (colorObject === null || colorObject === undefined) {
       this._color = null;
     } else if (colorObject.getFormat) { // Check for tinycolor method
@@ -23,23 +30,43 @@ export default class ColorGridColor {
     }
   }
 
-  get isGray() {
+  /**
+   * True if this color is a shade of gray (saturation is 0)
+   * @returns {boolean} true if this color is a shade of gray
+   */
+  get isGray(): bool {
     return this.color.toHsl().s === 0;
   }
 
-  get isMaxSaturated() {
+  /**
+   * True if this color is maximally saturated (saturation is 100%)
+   * @returns {boolean} true if this color is maximally saturated
+   */
+  get isMaxSaturated(): bool {
     return this.color.toHsl().s === 1;
   }
 
-  get asCSS() {
+  /**
+   * Get a string representation of this color that can be used in a CSS rule
+   * @returns {string}
+   */
+  get asCSS(): string {
     return this.color.toHslString();
   }
 
-  toString() {
+  /**
+   * Get a readable string describing the color in HSL and RGB terms
+   * @returns {string} readable string describing this color
+   */
+  toString(): string {
     return `${this.color.toHslString()} | ${this.color.toRgbString()}`;
   }
 
-  copy() {
+  /**
+   * Deep copy this ColorGridColor
+   * @returns {ColorGridColor} a deep clone of this object
+   */
+  clone(): ColorGridColor {
     return new ColorGridColor(this.color === null ? null : this.color.clone());
   }
 
@@ -47,7 +74,7 @@ export default class ColorGridColor {
    * Adjust saturation
    * @param {number} factor factor to adjust saturation by, in the range [-100, 100]
    */
-  adjustSaturation(factor) {
+  adjustSaturation(factor: number): void {
     if (factor === 0 || this.isGray) {
       return;
     }
@@ -60,30 +87,6 @@ export default class ColorGridColor {
     } else {
       this.color.desaturate(Math.abs(factor));
     }
-
-    /*
-     * Algorithm taken from original ColdWarm implementation
-    const factorBound = Math.max(-1, Math.min(1, Number(factor)));
-
-    const sorted = [
-      { name: 'r', value: this.r },
-      { name: 'g', value: this.g },
-      { name: 'b', value: this.b }
-    ];
-    sorted.sort((a, b) => a.value - b.value);
-    const gray = this.luminance;
-    const low = sorted[0];
-    const med = sorted[1];
-    const high = sorted[2];
-
-    if (factorBound > 0) {
-      this[med.name] -= ((high.value - med.value) / (high.value - low.value)) * low.value * factorBound;
-      this[low.name] -= low.value * factorBound;
-    } else {
-      this.r += (this.r - gray) * factorBound;
-      this.g += (this.g - gray) * factorBound;
-      this.b += (this.b - gray) * factorBound;
-    }*/
   }
 
   /**
@@ -91,7 +94,7 @@ export default class ColorGridColor {
    * Algorithm taken from the original ColdWarm implementation and modified to work here.
    * @param {number} factor factor to adjust the warmth by
    */
-  adjustWarmth(factor) {
+  adjustWarmth(factor: number): void {
     const luminance = this.color.getLuminance();
 
     const rgbColor = this.color.toRgb();
@@ -104,7 +107,11 @@ export default class ColorGridColor {
     this.adjustBrightness((luminance - this.color.getLuminance()) * 2);
   }
 
-  adjustBrightness(factor) {
+  /**
+   * Adjust brightness
+   * @param {number} factor factor to adjust brightness by, in the range [-100, 100]
+   */
+  adjustBrightness(factor: number): void {
     if (factor === 0) {
       return;
     }

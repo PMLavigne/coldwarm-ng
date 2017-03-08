@@ -1,0 +1,13 @@
+[ignore]
+<PROJECT_ROOT>/\(build|coverage|doc\)/.*
+<PROJECT_ROOT>/webpack.*
+<PROJECT_ROOT>/src/jsx/.*
+<PROJECT_ROOT>/src/\(CSXS|jsx|scss|flow\)/.*
+
+[libs]
+src/flow
+
+[options]
+munge_underscores=true
+strip_root=true
+unsafe.enable_getters_and_setters=true

@@ -76,9 +76,7 @@ export default class ContextMenu {
     const selectedId = $selected.attr('id');
 
     if (selectedId) {
-      this._selection = this.entries.find((entry) => {
-        return `coldwarm-menu-${entry.id}` === selectedId;
-      });
+      this._selection = this.entries.find(entry => `coldwarm-menu-${entry.id}` === selectedId);
     }
     this.close();
   }

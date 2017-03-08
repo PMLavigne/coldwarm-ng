@@ -94,7 +94,7 @@ export default class ColorGrid {
       return this.color;
     }
 
-    const curColor = this.color.copy();
+    const curColor = this.color.clone();
     const tempStep = Settings.get('temperatureStep');
     const lumaStep = Settings.get('luminanceStep');
     const relativeX = x - halfGridSize;

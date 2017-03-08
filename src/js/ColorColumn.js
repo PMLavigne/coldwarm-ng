@@ -78,7 +78,7 @@ export default class ColorColumn {
       return this.color;
     }
 
-    const curColor = this.color.copy();
+    const curColor = this.color.clone();
     const saturationStep = Settings.get('saturationStep');
     const relativePos = halfSize - pos;
 
