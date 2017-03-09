@@ -1,11 +1,11 @@
 [ignore]
 <PROJECT_ROOT>/\(build|coverage|doc\)/.*
 <PROJECT_ROOT>/webpack.*
-<PROJECT_ROOT>/src/jsx/.*
-<PROJECT_ROOT>/src/\(CSXS|jsx|scss|flow\)/.*
+<PROJECT_ROOT>/src/\(CSXS|jsx|scss|lib\)/.*
 
 [libs]
 src/flow
+node_modules/jss/flow-typed
 
 [options]
 munge_underscores=true

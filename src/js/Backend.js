@@ -111,6 +111,10 @@ export default class Backend {
     return this._appVersion;
   }
 
+  getHostEnvironment(): HostEnvironment {
+    return this.csInterface.getHostEnvironment();
+  }
+
   getForegroundColor(): Promise<ColorGridColor> {
     return this.getColor('foreground');
   }
@@ -186,6 +190,10 @@ export default class Backend {
         resolve(numeric);
       });
     });
+  }
+
+  registerThemeChangeHandler(handler: Function): void {
+    this.csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, handler);
   }
 
   photoshopCallback(e: CSEvent): void {

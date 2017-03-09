@@ -79,7 +79,7 @@ export default class ColorGridColor {
    * @returns {ColorGridColor} a deep clone of this object
    */
   clone(): ColorGridColor {
-    return new ColorGridColor(this.color ? null : this.color.clone());
+    return new ColorGridColor(this.color ? this.color.clone() : null);
   }
 
   /**

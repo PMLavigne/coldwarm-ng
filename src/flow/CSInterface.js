@@ -33,10 +33,14 @@ declare type GradientColor = {
 }
 
 declare type UIColor = {
-  type: 1 | 2;
+  type: 1;
   antialiasLevel: number;
-  color: RGBColor | GradientColor;
-}
+  color: RGBColor;
+} | {
+  type: 2;
+  antialiasLevel: number;
+  color: GradientColor;
+};
 
 declare type AppSkinInfo = {
   baseFontFamily: string;
@@ -117,6 +121,8 @@ declare class CSEvent {
 }
 
 declare class CSInterface {
+  static THEME_COLOR_CHANGED_EVENT: string;
+
   getExtensionID(): string;
   getHostEnvironment(): HostEnvironment;
   closeExtension(): void;

@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="lib/css/theme.css" id="hostStyle" />
-    <link rel="stylesheet" type="text/css" href="lib/css/dark.css" id="theme" />
+    <link rel="stylesheet" type="text/css" href="lib/css/dark.css" id="coldwarm-theme" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <style type="text/css" id="coldwarm-dynamic-theme"></style>
   </head>
   <body>
   <section class="coldwarm-body hostBgd">
@@ -16,7 +16,7 @@
       <header class="coldwarm-config-header">
         <div class="coldwarm-config-header-title"><h1>Configuration</h1></div>
         <div class="coldwarm-config-header-close">
-          <button id="closeBttn">Close</button>
+          <button id="closeBttn" class="topcoat-button">Close</button>
         </div>
       </header>
       <section class="coldwarm-config-body">
@@ -25,10 +25,12 @@
             <label class="coldwarm-config-label">Show saturation column</label>
           </div>
           <div class="coldwarm-config-control">
-            <label class="topcoat-switch">
-              <input id="showSaturationControl" type="checkbox" class="topcoat-switch__input">
-              <div class="topcoat-switch__toggle"></div>
-            </label>
+            <div class="coldwarm-config-switch-wrapper">
+              <label class="topcoat-switch">
+                <input id="showSaturationControl" type="checkbox" class="topcoat-switch__input">
+                <div class="topcoat-switch__toggle"></div>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -37,7 +39,7 @@
             <label for="gridSizeControl" class="coldwarm-config-label">Grid Size</label>
           </div>
           <div class="coldwarm-config-control">
-            <input type="range" class="topcoat-range-input" id="gridSizeControl" name="gridSizeControl" min="3" max="35" step="2" />
+            <input type="range" class="topcoat-range" id="gridSizeControl" name="gridSizeControl" min="3" max="35" step="2" />
           </div>
         </div>
 
@@ -46,7 +48,7 @@
             <label for="temperatureStepControl" class="coldwarm-config-label">Temperature Step</label>
           </div>
           <div class="coldwarm-config-control">
-            <input type="range" class="topcoat-range-input" id="temperatureStepControl" name="temperatureStepControl" min="0" max="50" step="1" />
+            <input type="range" class="topcoat-range" id="temperatureStepControl" name="temperatureStepControl" min="0" max="50" step="1" />
           </div>
         </div>
 
@@ -55,7 +57,7 @@
             <label for="luminanceStepControl" class="coldwarm-config-label">Luminance Step</label>
           </div>
           <div class="coldwarm-config-control">
-            <input type="range" class="topcoat-range-input" id="luminanceStepControl" name="luminanceStepControl" min="0" max="25" step="1" />
+            <input type="range" class="topcoat-range" id="luminanceStepControl" name="luminanceStepControl" min="0" max="25" step="1" />
           </div>
         </div>
 
@@ -64,18 +66,17 @@
             <label for="saturationStepControl" class="coldwarm-config-label">Saturation Step</label>
           </div>
           <div class="coldwarm-config-control">
-            <input type="range" class="topcoat-range-input" id="saturationStepControl" name="saturationStepControl" min="0" max="30" step="1" />
+            <input type="range" class="topcoat-range" id="saturationStepControl" name="saturationStepControl" min="0" max="30" step="1" />
           </div>
         </div>
 
         <div class="coldwarm-config-option coldwarm-config-defaults">
-          <button id="resetDefaults">Defaults</button>
+          <button id="resetDefaults" class="topcoat-button">Defaults</button>
         </div>
       </section>
     </section>
   </div>
   </body>
   <script type="text/javascript" src="lib/js/CSInterface.js"></script>
-  <script type="text/javascript" src="lib/js/themeManager.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </html>

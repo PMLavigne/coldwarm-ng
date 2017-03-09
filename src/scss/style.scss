@@ -138,6 +138,7 @@ body {
     display: flex;
     flex: 1 0 auto;
     flex-direction: row;
+    height: 2rem;
     padding-bottom: 3px;
     padding-top: 3px;
 
@@ -160,9 +161,9 @@ body {
     }
   }
 
-  .coldwarm-switch-wrapper {
-    display: inline-block;
-    flex: 1 1 auto;
+  .coldwarm-config-switch-wrapper {
+    text-align: center;
+    width: 100%;
   }
 
 
@@ -170,13 +171,13 @@ body {
     align-content: center;
     display: flex;
     flex: 0 0 140px;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
   }
 
   .coldwarm-config-defaults {
     font-size: 12px;
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 
@@ -244,6 +245,8 @@ body {
 // Light / Dark theme changes
 
 .light-theme {
+  color: $background-alpha-darkest;
+
   .coldwarm-config-body {
     background-color: inherit;
   }
@@ -259,6 +262,8 @@ body {
 }
 
 .dark-theme {
+  color: $background-alpha-lightest;
+
   .coldwarm-config-number input {
     color: $background-alpha-lightest;
     text-shadow: $impact-shadow-offset $impact-shadow-offset $impact-shadow-blur $impact-shadow-color-dark,
