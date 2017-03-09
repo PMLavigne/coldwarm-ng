@@ -1,12 +1,10 @@
 // @flow
 
-import $ from 'jquery';
 import Backend from './Backend';
 import ColorGrid from './ColorGrid';
 import ColorColumn from './ColorColumn';
 import { Settings } from './Settings';
 import SettingsPanel from './SettingsPanel';
-import ContextMenu from './ContextMenu';
 import Theme from './Theme';
 
 export default class Coldwarm {
@@ -28,7 +26,7 @@ export default class Coldwarm {
     this._backend = new Backend(() => this.refreshColor());
     this._grid = new ColorGrid('#coldwarm-left-panel', color => this.backend.setForegroundColor(color));
     this._column = new ColorColumn('#coldwarm-right-panel', color => this.backend.setForegroundColor(color));
-    this._settingsPanel = new SettingsPanel('#coldwarm-settings-panel');
+    this._settingsPanel = new SettingsPanel('#coldwarm-settings-panel', this.backend);
     this._theme = new Theme(this.backend);
     this.bindEvents();
     this.settingsPanel.init();
@@ -85,10 +83,22 @@ export default class Coldwarm {
   }
 
   bindEvents(): void {
-    $('.coldwarm-body').on('contextmenu', (e: MouseEvent) => {
-      ContextMenu.open(e, this.contextMenuEntries);
-      return false;
-    });
+    this.backend.csInterface.setContextMenuByJSON(JSON.stringify({
+      menu: [{
+        id: 'settings',
+        label: 'Settings',
+        enabled: true
+      }]
+    }), id => this.contextMenuCallback(id));
+  }
+
+  contextMenuCallback(id: string): void {
+    switch (id) {
+      case 'settings':
+        this.settingsPanel.show();
+        break;
+      default: break;
+    }
   }
 
 }

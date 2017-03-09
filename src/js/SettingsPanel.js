@@ -2,12 +2,17 @@ import $ from 'jquery';
 import { Settings } from './Settings';
 
 export default class SettingsPanel {
-  constructor(panelSelector) {
+  constructor(panelSelector, backend) {
     this.$el = $(panelSelector);
+    this._backend = backend;
 
     if (!this.$el || !this.$el.length) {
       console.error(`Can't find settings panel to bind to using selector ${panelSelector}`);
     }
+  }
+
+  get backend() {
+    return this._backend;
   }
 
   init() {
@@ -43,9 +48,11 @@ export default class SettingsPanel {
 
   show() {
     this.$el.addClass('active');
+    this.backend.csInterface.updateContextMenuItem('settings', false, false);
   }
 
   hide() {
     this.$el.removeClass('active');
+    this.backend.csInterface.updateContextMenuItem('settings', true, false);
   }
 }
