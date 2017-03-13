@@ -1,152 +1,95 @@
-import * as $ from 'jquery';
+// @flow
 
-export const KEY_PREFIX = 'codes.patrick.coldwarm-ng.';
+export type SettingName = 'showSaturation' | 'gridSize' | 'temperatureStep' | 'luminanceStep' | 'saturationStep';
 
-export const SettingDefaults = {
-  gridSize: 5,
-  temperatureStep: 10,
-  luminanceStep: 10,
-  showSaturation: true,
-  saturationStep: 10
+export type Setting = {
+  name: SettingName,
+  defaultVal: string,
+  type: 'boolean' | 'number' | 'string'
 };
 
-export class Setting {
-  static parse(key, serializedValue) {
-    const newSetting = new Setting(key);
-    newSetting.deserialize(serializedValue);
-    return newSetting;
+export default class Settings {
+  static _settings: {[key: SettingName]: Setting} = {
+    gridSize:        { name: 'gridSize', defaultVal: '5', type: 'number' },
+    temperatureStep: { name: 'temperatureStep', defaultVal: '10', type: 'number' },
+    luminanceStep:   { name: 'luminanceStep', defaultVal: '10', type: 'number' },
+    showSaturation:  { name: 'showSaturation', defaultVal: 'true', type: 'boolean' },
+    saturationStep:  { name: 'saturationStep', defaultVal: '10', type: 'number' }
+  };
+
+  static _onSettingChange: ?() => void = null;
+
+  static get onSettingChange(): ?() => void {
+    return Settings._onSettingChange;
   }
 
-  constructor(key, value = null) {
-    this._key = key;
-    this.value = value;
+  static set onSettingChange(handler: ?() => void): void {
+    Settings._onSettingChange = handler;
   }
 
-  get key() {
-    return this._key;
-  }
-
-  get value() {
-    return this._value;
-  }
-
-  set value(value) {
-    this._value = value;
-    this._type = $.type(value);
-  }
-
-  get type() {
-    return this._type || 'undefined';
-  }
-
-  serialize() {
-    let objString = '';
-
-    switch (this.type) {
-      case 'function':
-      case 'error':
-      case 'undefined':
-      case 'null':
-      default:
-        break;
-
-      case 'boolean':
-      case 'number':
-      case 'string':
-        objString = this.value.toString();
-        break;
-
-      case 'date':
-        objString = this.value.getTime().toString();
-        break;
-
-      case 'array':
-      case 'object':
-        objString = JSON.stringify(this.value);
-        break;
-    }
-
-    return `${this.type}:${objString}`;
-  }
-
-  deserialize(string) {
-    if (!string || string.indexOf(':') === -1) {
-      throw new Error(`Invalid settings string: ${string}`);
-    }
-
-    const breakAt = string.indexOf(':');
-    const type = string.substring(0, breakAt);
-    const data = (string.length - 1) === breakAt ? '' : string.substring(breakAt + 1);
-
-    switch (type) {
-      case 'function':
-      case 'error':
-      case 'undefined':
-      default:
-        this.value = undefined;
-        break;
-
-      case 'null':
-        this.value = null;
-        break;
-
-      case 'boolean':
-        this.value = (data === 'true');
-        break;
-
-      case 'number':
-        this.value = Number(data);
-        break;
-
-      case 'string':
-        this.value = data;
-        break;
-
-      case 'date':
-        this.value = new Date(Number(data));
-        break;
-
-      case 'array':
-      case 'object':
-        this.value = JSON.parse(data);
-        break;
-    }
-  }
-}
-
-export class Settings {
-
-  static onSettingChange = null;
-
-  static clear() {
-    Object.keys(SettingDefaults)
-          .forEach(key => localStorage.removeItem(KEY_PREFIX + key));
-    if (Settings.onSettingChange) {
-      Settings.onSettingChange();
+  static _doOnSettingChange(): void {
+    const onSettingChange: ?() => void = Settings.onSettingChange;
+    if (onSettingChange) {
+      onSettingChange();
     }
   }
 
-  static get(setting) {
-    const storedVal = localStorage.getItem(KEY_PREFIX + setting);
+  static _keyPrefix: string = '';
 
-    if (storedVal === null) {
-      return SettingDefaults[setting];
-    }
-
-    return Setting.parse(setting, storedVal).value;
+  static init(extensionId: string) {
+    Settings._keyPrefix = `${extensionId}.`;
   }
 
-  static set(setting, value) {
-    localStorage.setItem(KEY_PREFIX + setting, (new Setting(setting, value)).serialize());
-    if (Settings.onSettingChange) {
-      Settings.onSettingChange();
-    }
+  static get keyPrefix(): string {
+    return Settings._keyPrefix;
   }
 
-  static unset(setting) {
-    localStorage.removeItem(KEY_PREFIX + setting);
-    if (Settings.onSettingChange) {
-      Settings.onSettingChange();
+  static clear(): void {
+    Object.keys(Settings._settings)
+          .forEach(key => localStorage.removeItem(Settings.keyPrefix + key));
+
+    Settings._doOnSettingChange();
+  }
+
+  static _getRawOrDefault(setting: SettingName): string {
+    const storedVal = localStorage.getItem(Settings.keyPrefix + setting);
+
+    if (storedVal === null || storedVal === undefined) {
+      return this._settings[setting].defaultVal;
     }
+
+    return storedVal;
+  }
+
+  static getString(setting: SettingName): string {
+    if (!this._settings[setting] || this._settings[setting].type !== 'string') {
+      throw new Error(`${setting} is not a valid string setting`);
+    }
+
+    return this._getRawOrDefault(setting);
+  }
+
+  static getBool(setting: SettingName): bool {
+    if (!this._settings[setting] || this._settings[setting].type !== 'boolean') {
+      throw new Error(`${setting} is not a valid boolean setting`);
+    }
+    return this._getRawOrDefault(setting) === 'true';
+  }
+
+  static getNumber(setting: SettingName): number {
+    if (!this._settings[setting] || this._settings[setting].type !== 'number') {
+      throw new Error(`${setting} is not a valid numeric setting`);
+    }
+    return Number(this._getRawOrDefault(setting));
+  }
+
+  static set(setting: SettingName, value: bool | number | string) {
+    localStorage.setItem(Settings.keyPrefix + setting, JSON.stringify(value));
+    Settings._doOnSettingChange();
+  }
+
+  static unset(setting: SettingName) {
+    localStorage.removeItem(Settings.keyPrefix + setting);
+    Settings._doOnSettingChange();
   }
 }

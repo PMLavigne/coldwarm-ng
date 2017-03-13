@@ -13,6 +13,16 @@ const ColorChangeBindEvents = [
 
 export type PhotoshopColorType = 'foreground' | 'background';
 
+export type ContextMenu = {
+  id?: string,
+  label: string,
+  enabled?: bool,
+  checkable?: bool,
+  checked?: bool,
+  icon?: string,
+  menu?: Array<ContextMenu>
+};
+
 export default class Backend {
   static getEventIdFromJsonEvent(eventString: ?string): string {
     if (!eventString) {
@@ -194,6 +204,26 @@ export default class Backend {
 
   registerThemeChangeHandler(handler: Function): void {
     this.csInterface.addEventListener(CSInterface.THEME_COLOR_CHANGED_EVENT, handler);
+  }
+
+  updateContextMenuItem(menuId: string, enabled?: bool = true, checked?: bool | number = false) {
+    this.csInterface.updateContextMenuItem(menuId, enabled, !!checked);
+  }
+
+  setContextMenu(menu: ContextMenu | Array<ContextMenu>, onSelectedCallback: (id: string) => void) {
+    let menuJSON: string;
+
+    if (Array.isArray(menu)) {
+      menuJSON = JSON.stringify({
+        menu
+      });
+    } else {
+      menuJSON = JSON.stringify({
+        menu: [menu]
+      });
+    }
+
+    this.csInterface.setContextMenuByJSON(menuJSON, onSelectedCallback);
   }
 
   photoshopCallback(e: CSEvent): void {

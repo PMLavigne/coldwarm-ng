@@ -39,11 +39,11 @@ export default class SettingsPanel {
   }
 
   load() {
-    this.$gridSizeControl.val(Settings.get('gridSize'));
-    this.$saturationControl.prop('checked', Settings.get('showSaturation') ? 'checked' : '');
-    this.$temperatureStepControl.val(Settings.get('temperatureStep'));
-    this.$luminanceStepControl.val(Settings.get('luminanceStep'));
-    this.$saturationStepControl.val(Settings.get('saturationStep'));
+    this.$gridSizeControl.val(Settings.getNumber('gridSize'));
+    this.$saturationControl.prop('checked', Settings.getBool('showSaturation') ? 'checked' : '');
+    this.$temperatureStepControl.val(Settings.getNumber('temperatureStep'));
+    this.$luminanceStepControl.val(Settings.getNumber('luminanceStep'));
+    this.$saturationStepControl.val(Settings.getNumber('saturationStep'));
   }
 
   show() {

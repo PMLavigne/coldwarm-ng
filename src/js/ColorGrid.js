@@ -38,7 +38,7 @@ export default class ColorGrid {
   constructor(targetSelector, onSelectCallback) {
     this._color = null;
     this._onSelectCallback = onSelectCallback;
-    this._gridSize = Number(Settings.get('gridSize'));
+    this._gridSize = Number(Settings.getNumber('gridSize'));
     this._gridRows = [];
     this.$el = $(targetSelector);
 
@@ -71,7 +71,7 @@ export default class ColorGrid {
   renderGrid() {
     this.$el.empty();
     this._gridRows = [];
-    this._gridSize = Number(Settings.get('gridSize'));
+    this._gridSize = Number(Settings.getNumber('gridSize'));
     if (this.gridSize % 2 === 0) {
       console.log(`WARNING: ColorGrid.gridSize must be odd, adding 1 to ${this.gridSize}`);
       this._gridSize++;
@@ -95,8 +95,8 @@ export default class ColorGrid {
     }
 
     const curColor = this.color.clone();
-    const tempStep = Settings.get('temperatureStep');
-    const lumaStep = Settings.get('luminanceStep');
+    const tempStep = Settings.getNumber('temperatureStep');
+    const lumaStep = Settings.getNumber('luminanceStep');
     const relativeX = x - halfGridSize;
     const relativeY = halfGridSize - y;
 

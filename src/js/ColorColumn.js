@@ -7,7 +7,7 @@ export default class ColorColumn {
   constructor(targetSelector, onSelectCallback) {
     this._color = null;
     this._onSelectCallback = onSelectCallback;
-    this._size = Number(Settings.get('gridSize'));
+    this._size = Number(Settings.getNumber('gridSize'));
     this._squares = [];
     this.$el = $(targetSelector);
 
@@ -48,7 +48,7 @@ export default class ColorColumn {
       this.squares.forEach(square => square.refresh());
     }
 
-    if (Settings.get('showSaturation')) {
+    if (Settings.getBool('showSaturation')) {
       this.show();
     } else {
       this.hide();
@@ -59,7 +59,7 @@ export default class ColorColumn {
     this.$el.empty();
     this._squares = [];
 
-    this._size = Number(Settings.get('gridSize'));
+    this._size = Number(Settings.getNumber('gridSize'));
     if (this.size % 2 === 0) {
       console.log(`WARNING: ColorColumn.size must be odd, adding 1 to ${this.size}`);
       this._size++;
@@ -79,7 +79,7 @@ export default class ColorColumn {
     }
 
     const curColor = this.color.clone();
-    const saturationStep = Settings.get('saturationStep');
+    const saturationStep = Settings.getNumber('saturationStep');
     const relativePos = halfSize - pos;
 
     curColor.adjustSaturation(saturationStep * relativePos);

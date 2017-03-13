@@ -3,7 +3,7 @@
 import Backend from './Backend';
 import ColorGrid from './ColorGrid';
 import ColorColumn from './ColorColumn';
-import { Settings } from './Settings';
+import Settings from './Settings';
 import SettingsPanel from './SettingsPanel';
 import Theme from './Theme';
 
@@ -24,6 +24,7 @@ export default class Coldwarm {
 
   constructor() {
     this._backend = new Backend(() => this.refreshColor());
+    Settings.init(this.backend.extensionId);
     this._grid = new ColorGrid('#coldwarm-left-panel', color => this.backend.setForegroundColor(color));
     this._column = new ColorColumn('#coldwarm-right-panel', color => this.backend.setForegroundColor(color));
     this._settingsPanel = new SettingsPanel('#coldwarm-settings-panel', this.backend);
@@ -78,24 +79,37 @@ export default class Coldwarm {
   }
 
   onSettingChange(): void {
+    this.settingsPanel.load();
+    this.backend.updateContextMenuItem('saturation', true, Settings.getBool('showSaturation'));
     this.redraw()
         .catch(err => console.error('Error reloading Coldwarm: ', err));
   }
 
   bindEvents(): void {
-    this.backend.csInterface.setContextMenuByJSON(JSON.stringify({
-      menu: [{
+    this.backend.setContextMenu([
+      {
+        id: 'saturation',
+        label: 'Saturation Bar',
+        enabled: true,
+        checkable: true,
+        checked: Settings.getBool('showSaturation')
+      }, {
+        label: '---'
+      }, {
         id: 'settings',
         label: 'Settings',
         enabled: true
-      }]
-    }), id => this.contextMenuCallback(id));
+      }
+    ], id => this.contextMenuCallback(id));
   }
 
   contextMenuCallback(id: string): void {
     switch (id) {
       case 'settings':
         this.settingsPanel.show();
+        break;
+      case 'saturation':
+        Settings.set('showSaturation', !Settings.getBool('showSaturation'));
         break;
       default: break;
     }
