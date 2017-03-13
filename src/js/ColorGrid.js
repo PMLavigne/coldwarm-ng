@@ -1,29 +1,43 @@
-import $ from 'jquery';
+// @flow
 
-import { Settings } from './Settings';
+import $, { jQuery } from 'jquery';
+
+import Settings from './Settings';
 import ColorGridSquare from './ColorGridSquare';
+import ColorGridColor from './ColorGridColor';
 
 
 class ColorGridRow {
-  constructor(x) {
-    this.x = x;
-    this.squares = [];
-    this.$el = null;
+  _x: number;
+  _squares: Array<ColorGridSquare>;
+  $el: jQuery;
+
+  constructor(x: number) {
+    this._x = x;
+    this._squares = [];
   }
 
-  addSquare(square) {
+  get x(): number {
+    return this._x;
+  }
+
+  get squares(): Array<ColorGridSquare> {
+    return this._squares;
+  }
+
+  addSquare(square: ColorGridSquare): void {
     this.squares.push(square);
   }
 
-  get(index) {
+  get(index: number): ColorGridSquare {
     return this.squares[index];
   }
 
-  refresh() {
+  refresh(): void {
     this.squares.forEach(square => square.refresh());
   }
 
-  render() {
+  render(): jQuery {
     this.$el = $('<div />').attr('class', 'coldwarm-grid-row')
                            .attr('id', `coldwarm-grid-row-${this.x}`);
     this.squares.forEach((square) => {
@@ -35,11 +49,15 @@ class ColorGridRow {
 
 
 export default class ColorGrid {
-  constructor(targetSelector, onSelectCallback) {
-    this._color = null;
+  _color: ColorGridColor;
+  _gridSize: number;
+  _gridRows: Array<ColorGridRow> = [];
+  _onSelectCallback: (color: ColorGridColor) => Promise<void>;
+  $el: jQuery;
+
+  constructor(targetSelector: string, onSelectCallback: (color: ColorGridColor) => Promise<void>) {
     this._onSelectCallback = onSelectCallback;
-    this._gridSize = Number(Settings.getNumber('gridSize'));
-    this._gridRows = [];
+    this._gridSize = Settings.getNumber('gridSize');
     this.$el = $(targetSelector);
 
     if (!this.$el || !this.$el.length) {
@@ -47,20 +65,20 @@ export default class ColorGrid {
     }
   }
 
-  get gridSize() {
+  get gridSize(): number {
     return this._gridSize;
   }
 
-  get color() {
+  get color(): ColorGridColor {
     return this._color;
   }
 
-  set color(newColor) {
+  set color(newColor: ColorGridColor): void {
     this._color = newColor;
     this.refresh();
   }
 
-  refresh() {
+  refresh(): void {
     if (!this._gridRows.length) {
       this.renderGrid();
     } else {
@@ -68,10 +86,10 @@ export default class ColorGrid {
     }
   }
 
-  renderGrid() {
+  renderGrid(): void {
     this.$el.empty();
     this._gridRows = [];
-    this._gridSize = Number(Settings.getNumber('gridSize'));
+    this._gridSize = Settings.getNumber('gridSize');
     if (this.gridSize % 2 === 0) {
       console.log(`WARNING: ColorGrid.gridSize must be odd, adding 1 to ${this.gridSize}`);
       this._gridSize++;
@@ -88,7 +106,7 @@ export default class ColorGrid {
     }
   }
 
-  getColorFor(x, y) {
+  getColorFor(x: number, y: number): ColorGridColor {
     const halfGridSize = (this.gridSize - 1) / 2;
     if (x === halfGridSize && y === halfGridSize) {
       return this.color;

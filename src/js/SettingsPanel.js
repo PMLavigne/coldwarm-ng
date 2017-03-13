@@ -1,21 +1,22 @@
-import $ from 'jquery';
-import { Settings } from './Settings';
+// @flow
+
+import $, { jQuery } from 'jquery';
+import Settings from './Settings';
+import Backend from './Backend';
 
 export default class SettingsPanel {
-  constructor(panelSelector, backend) {
+  _backend: Backend;
+  $el: jQuery;
+  $closeBttn: jQuery;
+  $defaultBttn: jQuery;
+  $saturationControl: jQuery;
+  $gridSizeControl: jQuery;
+  $temperatureStepControl: jQuery;
+  $luminanceStepControl: jQuery;
+  $saturationStepControl: jQuery;
+
+  constructor(panelSelector: string, backend: Backend) {
     this.$el = $(panelSelector);
-    this._backend = backend;
-
-    if (!this.$el || !this.$el.length) {
-      console.error(`Can't find settings panel to bind to using selector ${panelSelector}`);
-    }
-  }
-
-  get backend() {
-    return this._backend;
-  }
-
-  init() {
     this.$closeBttn = this.$el.find('#closeBttn');
     this.$defaultBttn = this.$el.find('#resetDefaults');
     this.$saturationControl = this.$el.find('#showSaturationControl');
@@ -24,6 +25,18 @@ export default class SettingsPanel {
     this.$luminanceStepControl = this.$el.find('#luminanceStepControl');
     this.$saturationStepControl = this.$el.find('#saturationStepControl');
 
+    this._backend = backend;
+
+    if (!this.$el || !this.$el.length) {
+      console.error(`Can't find settings panel to bind to using selector ${panelSelector}`);
+    }
+  }
+
+  get backend(): Backend {
+    return this._backend;
+  }
+
+  init(): void {
     this.$closeBttn.on('click', () => this.hide());
     this.$defaultBttn.on('click', () => {
       Settings.clear();
@@ -38,7 +51,7 @@ export default class SettingsPanel {
     this.load();
   }
 
-  load() {
+  load(): void {
     this.$gridSizeControl.val(Settings.getNumber('gridSize'));
     this.$saturationControl.prop('checked', Settings.getBool('showSaturation') ? 'checked' : '');
     this.$temperatureStepControl.val(Settings.getNumber('temperatureStep'));
@@ -46,12 +59,12 @@ export default class SettingsPanel {
     this.$saturationStepControl.val(Settings.getNumber('saturationStep'));
   }
 
-  show() {
+  show(): void {
     this.$el.addClass('active');
     this.backend.csInterface.updateContextMenuItem('settings', false, false);
   }
 
-  hide() {
+  hide(): void {
     this.$el.removeClass('active');
     this.backend.csInterface.updateContextMenuItem('settings', true, false);
   }
