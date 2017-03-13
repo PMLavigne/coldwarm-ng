@@ -16,7 +16,14 @@ export default class SettingsPanel {
   $saturationStepControl: jQuery;
 
   constructor(panelSelector: string, backend: Backend) {
+    this._backend = backend;
     this.$el = $(panelSelector);
+
+    if (!this.$el || !this.$el.length) {
+      console.error(`Can't find settings panel to bind to using selector ${panelSelector}`);
+      return;
+    }
+
     this.$closeBttn = this.$el.find('#closeBttn');
     this.$defaultBttn = this.$el.find('#resetDefaults');
     this.$saturationControl = this.$el.find('#showSaturationControl');
@@ -24,12 +31,6 @@ export default class SettingsPanel {
     this.$temperatureStepControl = this.$el.find('#temperatureStepControl');
     this.$luminanceStepControl = this.$el.find('#luminanceStepControl');
     this.$saturationStepControl = this.$el.find('#saturationStepControl');
-
-    this._backend = backend;
-
-    if (!this.$el || !this.$el.length) {
-      console.error(`Can't find settings panel to bind to using selector ${panelSelector}`);
-    }
   }
 
   get backend(): Backend {
