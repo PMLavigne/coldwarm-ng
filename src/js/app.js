@@ -7,6 +7,6 @@ window.onload = () => {
   try {
     Coldwarm.init();
   } catch (err) {
-    console.error(err);
+    console.error('Uncaught Coldwarm Exception', err);
   }
 };

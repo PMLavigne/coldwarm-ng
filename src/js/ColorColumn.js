@@ -1,14 +1,21 @@
-import $ from 'jquery';
+// @flow
+import $, { jQuery } from 'jquery';
 
-import { Settings } from './Settings';
+import Settings from './Settings';
 import ColorGridSquare from './ColorGridSquare';
+import ColorGridColor from './ColorGridColor';
 
 export default class ColorColumn {
-  constructor(targetSelector, onSelectCallback) {
-    this._color = null;
+
+  $el: jQuery;
+  _color: ColorGridColor;
+  _onSelectCallback: (color: ColorGridColor) => Promise<void>;
+  _size: number;
+  _squares: Array<ColorGridSquare> = [];
+
+  constructor(targetSelector: string, onSelectCallback: (color: ColorGridColor) => Promise<void>) {
     this._onSelectCallback = onSelectCallback;
-    this._size = Number(Settings.getNumber('gridSize'));
-    this._squares = [];
+    this._size = Settings.getNumber('gridSize');
     this.$el = $(targetSelector);
 
     if (!this.$el || !this.$el.length) {
@@ -16,32 +23,32 @@ export default class ColorColumn {
     }
   }
 
-  get size() {
+  get size(): number {
     return this._size;
   }
 
-  get squares() {
+  get squares(): Array<ColorGridSquare> {
     return this._squares;
   }
 
-  get color() {
+  get color(): ColorGridColor {
     return this._color;
   }
 
-  set color(newColor) {
+  set color(newColor: ColorGridColor): void {
     this._color = newColor;
     this.refresh();
   }
 
-  show() {
+  show(): void {
     this.$el.addClass('active');
   }
 
-  hide() {
+  hide(): void {
     this.$el.removeClass('active');
   }
 
-  refresh() {
+  refresh(): void {
     if (!this.squares.length) {
       this.render();
     } else {
@@ -55,11 +62,11 @@ export default class ColorColumn {
     }
   }
 
-  render() {
+  render(): void {
     this.$el.empty();
     this._squares = [];
 
-    this._size = Number(Settings.getNumber('gridSize'));
+    this._size = Settings.getNumber('gridSize');
     if (this.size % 2 === 0) {
       console.log(`WARNING: ColorColumn.size must be odd, adding 1 to ${this.size}`);
       this._size++;
@@ -72,7 +79,7 @@ export default class ColorColumn {
     }
   }
 
-  getColorFor(ignored, pos) {
+  getColorFor(ignored: any, pos: number): ColorGridColor {
     const halfSize = (this.size - 1) / 2;
     if (pos === halfSize) {
       return this.color;
