@@ -84,7 +84,7 @@ export default class Settings {
   }
 
   static set(setting: SettingName, value: bool | number | string) {
-    localStorage.setItem(Settings.keyPrefix + setting, JSON.stringify(value));
+    localStorage.setItem(Settings.keyPrefix + setting, value.toString());
     Settings._doOnSettingChange();
   }
 
