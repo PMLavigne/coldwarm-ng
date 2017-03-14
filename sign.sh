@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -x
+#!/usr/bin/env bash
 
 # This file is a wrapper around Adobe's ucf signing program. It can't be redistributed here, it must be downloaded at
 # the following URL: http://www.adobe.com/devnet/creativesuite/sdk/eula_cs6-signing-toolkit.html
@@ -14,7 +14,7 @@
 : ${ADOBE_UCF_TOOLKIT_PATH:="../signingtoolkit"};
 : ${COLDWARM_SIGN_STORETYPE:="PKCS12"};
 : ${COLDWARM_SIGN_KEYSTORE:="../coldwarm-ng.p12"};
-: ${COLDWARM_SIGN_TSA:="http://tsa.safecreative.org/"};
+: ${COLDWARM_SIGN_TSA:="http://freetsa.org/tsr"};
 : ${COLDWARM_PACKAGE_FILENAME:="./coldwarm-ng.zxp"};
 : ${COLDWARM_PACKAGE_ROOT:="./build/"};
 
